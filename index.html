@@ -3,99 +3,117 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AVNAUR — Hand-Poured Candles</title>
-<meta name="description" content="AVNAUR — thoughtfully hand-poured candles made to bring warmth, calm, and quiet luxury into everyday spaces.">
+<title>AVNAUR — Premium Moments, Beautifully Delivered</title>
+<meta name="description" content="AVNAUR creates premium moments of peace, happiness and warmth through thoughtfully crafted experiences.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500;600&display=swap');
-:root{--ink:#29231f;--cream:#f5f0e8;--sand:#e6dacb;--brown:#7b6251;--line:rgba(41,35,31,.16)}
-*{box-sizing:border-box} html{scroll-behavior:smooth}
-body{margin:0;background:var(--cream);color:var(--ink);font-family:"DM Sans",sans-serif}
-nav{height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 7%;border-bottom:1px solid var(--line)}
-.logo{font-family:"Cormorant Garamond",serif;font-size:30px;letter-spacing:6px;font-weight:600}
-nav a{color:inherit;text-decoration:none;font-size:13px;margin-left:22px}
-.hero{min-height:72vh;display:grid;place-items:center;text-align:center;padding:70px 8%;background:linear-gradient(135deg,#eee5da,#f7f3ec)}
-.eyebrow{text-transform:uppercase;letter-spacing:3px;font-size:11px;color:var(--brown)}
-h1,h2{font-family:"Cormorant Garamond",serif;font-weight:500}
-h1{font-size:clamp(64px,11vw,140px);letter-spacing:8px;margin:14px 0 8px}
-.hero p{max-width:500px;line-height:1.7;color:#5e5148;font-size:17px}
-.btn{display:inline-block;margin-top:22px;background:var(--ink);color:#fff;padding:14px 25px;text-decoration:none;font-size:13px;letter-spacing:.5px}
-section{padding:90px 9%;max-width:1200px;margin:auto}
-.section-title{text-align:center;font-size:48px;margin:0 0 14px}
-.intro{text-align:center;max-width:620px;margin:0 auto 45px;line-height:1.8;color:#65594f}
-.product{display:grid;grid-template-columns:1fr 1fr;min-height:390px;background:#eadfce}
-.product-image{display:grid;place-items:center;background:#d8c6b0;font-size:95px}
-.product-copy{padding:55px;display:flex;flex-direction:column;justify-content:center}
-.product-copy h3{font-family:"Cormorant Garamond",serif;font-size:43px;font-weight:500;margin:0 0 12px}
-.tag{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--brown)}
-.product-copy p{line-height:1.8;color:#5d5149}
-.features{display:grid;grid-template-columns:repeat(3,1fr);gap:25px;text-align:center}
-.feature{padding:28px 18px;border-top:1px solid var(--line)}
-.feature h3{font-family:"Cormorant Garamond",serif;font-size:27px;font-weight:500;margin:8px}
-.feature p{font-size:14px;line-height:1.7;color:#65594f}
-.story{background:#2c2723;color:#f5f0e8;max-width:none;padding:100px 12%;text-align:center}
-.story h2{font-size:54px;margin:0 0 20px}
-.story p{max-width:680px;margin:auto;line-height:1.9;color:#d8cfc5}
+:root{--cream:#f7f3ed;--paper:#fffdf9;--ink:#26211e;--muted:#756c65;--gold:#a98a68;--line:#ded5ca;--dark:#29231f}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:"DM Sans",Arial,sans-serif}
+a{text-decoration:none;color:inherit}
+nav{height:76px;display:flex;align-items:center;justify-content:space-between;padding:0 7%;border-bottom:1px solid var(--line);background:rgba(247,243,237,.95);position:sticky;top:0;z-index:5;backdrop-filter:blur(8px)}
+.logo{font-family:"Playfair Display",serif;font-size:28px;letter-spacing:7px}
+.links{display:flex;gap:28px;font-size:12px;letter-spacing:.7px;text-transform:uppercase}
+.hero{min-height:calc(100vh - 76px);display:grid;place-items:center;text-align:center;padding:90px 8%;background:radial-gradient(circle at 50% 30%,#fffdf8 0,#f4ede3 46%,#e9ddcf 100%)}
+.eyebrow{text-transform:uppercase;letter-spacing:3px;font-size:10px;color:var(--gold);font-weight:600}
+h1,h2,h3{font-family:"Playfair Display",serif;font-weight:500}
+h1{font-size:clamp(48px,7vw,88px);line-height:1.02;letter-spacing:-1px;margin:18px 0}
+.hero h1 span{display:block;font-style:italic}
+.hero p{max-width:570px;margin:25px auto;color:var(--muted);line-height:1.85;font-size:16px}
+.btn{display:inline-block;background:var(--dark);color:white;padding:15px 28px;font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-top:18px;transition:.2s}
+.btn:hover{transform:translateY(-2px)}
+section{padding:100px 8%;max-width:1250px;margin:auto}
+.heading{text-align:center;margin-bottom:55px}
+.heading h2{font-size:clamp(38px,5vw,60px);margin:12px 0}
+.heading p{max-width:600px;margin:auto;color:var(--muted);line-height:1.8}
+.promise{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.promise div{padding:40px 30px;text-align:center;border-right:1px solid var(--line)}
+.promise div:last-child{border:0}
+.promise h3{font-size:28px;margin:10px 0}
+.promise p{font-size:14px;color:var(--muted);line-height:1.7;margin:0}
+.feature{display:grid;grid-template-columns:1.05fr .95fr;background:var(--paper)}
+.visual{min-height:460px;background:linear-gradient(145deg,#cdb79e,#e9ded0);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.candle{width:150px;height:205px;background:#f7f0e6;border-radius:10px 10px 18px 18px;box-shadow:0 25px 35px rgba(0,0,0,.16);position:relative}
+.candle:before{content:"";position:absolute;left:58px;top:-42px;width:34px;height:54px;background:linear-gradient(#fff6bd,#e9a852);border-radius:60% 60% 60% 60%;transform:rotate(8deg);box-shadow:0 0 35px #f7c878}
+.candle:after{content:"AVNAUR\A WOODLAND COLLECTION";white-space:pre;position:absolute;top:72px;left:17px;right:17px;text-align:center;font-size:10px;line-height:2;letter-spacing:1.5px;color:#3b3029}
+.feature-copy{padding:65px;display:flex;flex-direction:column;justify-content:center}
+.feature-copy h2{font-size:52px;margin:12px 0}
+.feature-copy p{line-height:1.9;color:var(--muted)}
+.story{background:var(--dark);color:#f5efe7;max-width:none;text-align:center;padding:115px 10%}
+.story h2{font-size:clamp(42px,6vw,70px);margin:12px 0 24px}
+.story p{max-width:720px;margin:auto;line-height:1.95;color:#cfc5bb}
 .contact{text-align:center}
-.contact p{line-height:1.8;color:#65594f}
-footer{text-align:center;padding:35px;border-top:1px solid var(--line);font-size:12px;color:#74685f}
-@media(max-width:700px){nav{padding:0 5%}.nav-links{display:none}.product{grid-template-columns:1fr}.product-image{min-height:250px}.product-copy{padding:38px 28px}.features{grid-template-columns:1fr}section{padding:70px 7%}}
+.contact h2{font-size:55px;margin:12px 0}
+.contact p{color:var(--muted);line-height:1.8}
+footer{text-align:center;padding:35px 8%;border-top:1px solid var(--line);font-size:11px;color:var(--muted);letter-spacing:.5px}
+@media(max-width:760px){nav{padding:0 6%}.links{display:none}.promise,.feature{grid-template-columns:1fr}.promise div{border-right:0;border-bottom:1px solid var(--line)}.feature-copy{padding:45px 28px}.visual{min-height:360px}section{padding:75px 6%}}
 </style>
 </head>
 <body>
 <nav>
-<div class="logo">AVNAUR</div>
-<div class="nav-links"><a href="#collection">Collection</a><a href="#story">Our Story</a><a href="#contact">Contact</a></div>
+<a href="#" class="logo">AVNAUR</a>
+<div class="links">
+<a href="#about">Our Story</a>
+<a href="#collection">Collection</a>
+<a href="#contact">Contact</a>
+</div>
 </nav>
 
 <main>
 <section class="hero">
 <div>
-<div class="eyebrow">Hand-poured in small batches</div>
-<h1>AVNAUR</h1>
-<p>Quiet luxury for everyday rituals. Thoughtfully crafted candles designed to bring warmth, calm, and a little beauty into your space.</p>
+<div class="eyebrow">A premium experience</div>
+<h1>Premium moments,<span>beautifully delivered.</span></h1>
+<p>AVNAUR exists to bring a little more peace, warmth and happiness into everyday life — through thoughtful creations made for moments worth cherishing.</p>
 <a class="btn" href="#collection">Discover AVNAUR</a>
 </div>
 </section>
 
+<section id="about">
+<div class="heading">
+<div class="eyebrow">What we believe</div>
+<h2>More than a product.<br>A feeling.</h2>
+<p>The best moments are often the quiet ones. A warm glow. A thoughtful gift. A familiar scent. AVNAUR is built around creating those moments — and making them feel special.</p>
+</div>
+<div class="promise">
+<div><div class="eyebrow">01</div><h3>Peace</h3><p>Little rituals designed to slow life down and make space feel calmer.</p></div>
+<div><div class="eyebrow">02</div><h3>Happiness</h3><p>Thoughtful creations and gifts made to bring genuine joy.</p></div>
+<div><div class="eyebrow">03</div><h3>Premium</h3><p>Beautiful details, quality materials and an experience worth remembering.</p></div>
+</div>
+</section>
+
 <section id="collection">
-<div class="eyebrow" style="text-align:center">The first collection</div>
-<h2 class="section-title">Made for slow moments.</h2>
-<p class="intro">Our debut candle is being crafted with care. Simple ingredients, a considered fragrance, and a design worthy of your space.</p>
-<div class="product">
-<div class="product-image">🕯️</div>
-<div class="product-copy">
-<div class="tag">Coming Soon</div>
-<h3>Lavender Serenity</h3>
-<p>A soft, calming lavender fragrance created for evenings when you want to slow down. Hand-poured with soy wax and designed to make your room feel like a retreat.</p>
-<span class="tag">First release · Limited batches</span>
+<div class="feature">
+<div class="visual"><div class="candle"></div></div>
+<div class="feature-copy">
+<div class="eyebrow">The first chapter · Coming soon</div>
+<h2>Teakwood · Oudh · Sandalwood</h2>
+<p>Our first collection is inspired by rich, warm and timeless woods. Deep teakwood, luxurious oudh and smooth sandalwood come together to create a refined fragrance experience for moments of calm and quiet luxury.</p>
+<p><strong>Hand-poured. Thoughtfully crafted. Made to be remembered.</strong></p>
+<a href="#contact" class="btn">Be part of the launch</a>
 </div>
 </div>
 </section>
 
-<section>
-<div class="eyebrow" style="text-align:center">Why AVNAUR</div>
-<h2 class="section-title">Simple. Thoughtful. Beautiful.</h2>
-<div class="features">
-<div class="feature"><div class="tag">01</div><h3>Hand-poured</h3><p>Made in small batches with attention to every pour.</p></div>
-<div class="feature"><div class="tag">02</div><h3>Thoughtful scents</h3><p>Fragrances selected to create a feeling, not overwhelm a room.</p></div>
-<div class="feature"><div class="tag">03</div><h3>Made to stay</h3><p>Elegant pieces designed to belong in your space long after the flame is gone.</p></div>
-</div>
-</section>
-
-<section class="story" id="story">
-<div class="eyebrow" style="color:#c7aa8e">Our story</div>
-<h2>Light changes a room.<br>So can a small ritual.</h2>
-<p>AVNAUR was created around a simple idea: everyday spaces deserve moments of calm. We are building a candle brand for people who appreciate warmth, quiet details, and the feeling of coming home.</p>
+<section class="story">
+<div class="eyebrow" style="color:#b99a78">The AVNAUR story</div>
+<h2>Delivering happiness.<br>Creating cherished moments.</h2>
+<p>AVNAUR began with a simple belief: ordinary days deserve beautiful moments. We are building a premium brand around warmth, peace and thoughtful experiences — starting with candles, and growing wherever meaningful moments take us.</p>
 </section>
 
 <section class="contact" id="contact">
 <div class="eyebrow">Stay close</div>
-<h2 class="section-title">AVNAUR is just getting started.</h2>
-<p>Our first collection is coming soon.<br>Follow our journey and be among the first to know when we launch.</p>
+<h2>The journey starts here.</h2>
+<p>Our first collection is on its way. Follow AVNAUR as we create something worth waiting for.</p>
+<p><strong>Email</strong><br><a href="mailto:hello@avnaur.in">hello@avnaur.in</a></p>
 <a class="btn" href="mailto:hello@avnaur.in">Contact AVNAUR</a>
+<p style="margin-top:22px;font-size:13px;color:#756c65;">Instagram coming soon.</p>
 </section>
 </main>
 
-<footer>© 2026 AVNAUR. All rights reserved.</footer>
+<footer>© 2026 AVNAUR · Premium moments, beautifully delivered.</footer>
 </body>
 </html>
