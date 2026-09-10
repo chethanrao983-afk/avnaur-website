@@ -115,159 +115,162 @@ footer{text-align:center;padding:35px 8%;border-top:1px solid var(--line);font-s
   </div>
 </section>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* AVNAUR FINAL STOREFRONT INTEGRATION
+   Public Supabase publishable key is safe for browser use only with RLS enabled.
+   Never put a Razorpay secret key in this file.
+*/
 const AVNAUR_SUPABASE_URL='https://ofyejsjxmhdvxdwjflhu.supabase.co';
 const AVNAUR_SUPABASE_KEY='sb_publishable_sI2-_B0LUG9yuysnm-lw5w_7371zv4Z';
 const AVNAUR_SB=window.supabase.createClient(AVNAUR_SUPABASE_URL,AVNAUR_SUPABASE_KEY);
-</script><footer>© 2026 AVNAUR · Premium moments, beautifully delivered.<div class="policy-links" style="margin-top:14px;font-size:12px;"><a href="#policies">Return Policy</a> &nbsp; | &nbsp; <a href="#policies">Terms & Conditions</a></div><a href="admin.html" style="display:inline-block;margin-top:12px;font-size:10px;color:#756c65;text-decoration:underline">Admin</a></footer><script>
-/* ================= AVNAUR COMMERCE SETTINGS =================
-   1) Set real product prices in PRODUCT_CATALOG.
-   2) For Razorpay Payment Links, paste the real URL into paymentLink.
-   3) If you later use Razorpay Standard Checkout/API, DO NOT put secret keys here.
-      Create a backend endpoint that creates an order and verifies the payment.
-================================================================ */
-const PRODUCT_CATALOG={
- teakwood:{name:'Teakwood',price:999,paymentLink:'',image:''},
- oudh:{name:'Oudh',price:1199,paymentLink:'',image:''},
- sandalwood:{name:'Sandalwood',price:1099,paymentLink:'',image:''}
-};
-async function AVNAUR_loadProducts(){
- try{
-  const {data,error}=await AVNAUR_SB.from('products').select('*').eq('in_stock',true).order('created_at',{ascending:true});
-  if(error||!data?.length)return;
-  Object.keys(PRODUCT_CATALOG).forEach(k=>delete PRODUCT_CATALOG[k]);
-  data.forEach(p=>{const id=String(p.id);PRODUCT_CATALOG[id]={id,name:p.name,price:Number(p.price||0),paymentLink:p.payment_link||'',image:p.image_url||'',description:p.description||''};});
-  const grid=document.querySelector('.products');
-  if(!grid)return;
-  grid.innerHTML=data.map((p,i)=>`<article class=\"product-card\"><div class=\"product-image\">${p.image_url?`<img src=\"${String(p.image_url).replace(/\"/g,'&quot;')}\" alt=\"${String(p.name||'AVNAUR candle').replace(/\"/g,'&quot;')}\">`:'<div class=\"photo-fallback\"><div class=\"photo-candle\"></div></div>'}</div><div class=\"product-copy\"><div class=\"eyebrow\">No. ${String(i+1).padStart(2,'0')}</div><h3>${AVNAUR_escape(p.name)}</h3><p>${AVNAUR_escape(p.description||'A considered AVNAUR ritual.')}</p><strong>${money(p.price)}</strong><div class=\"product-actions\"><button class=\"btn add-cart\" type=\"button\" data-id=\"${p.id}\">Add to Cart</button><button class=\"secondary-btn buy-now\" type=\"button\" data-id=\"${p.id}\">Buy Now</button></div></div></article>`).join('');
-  document.querySelectorAll('.add-cart').forEach(b=>b.onclick=()=>addToCart(b.dataset.id));
-  document.querySelectorAll('.buy-now').forEach(b=>{b.onclick=()=>{cart=[];addToCart(b.dataset.id);}});
- }catch(e){}
-}
-function AVNAUR_escape(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-AVNAUR_loadProducts();
+const money=n=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(Number(n||0));
+const esc=v=>String(v??'').replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[c]));
+const PRODUCT_CATALOG={};
 let cart=JSON.parse(localStorage.getItem('avnaurCart')||'[]');
-const money=n=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(n);
-const saveCart=()=>localStorage.setItem('avnaurCart',JSON.stringify(cart));
-function addToCart(id){const p=PRODUCT_CATALOG[id];if(!p)return;const item=cart.find(x=>String(x.id)===String(id));if(item)item.qty++;else cart.push({id,...p,qty:1});saveCart();renderCart();openCart();}
-function renderCart(){const wrap=document.getElementById('cartItems'), count=document.getElementById('cartCount'), area=document.getElementById('checkoutArea');const qty=cart.reduce((a,i)=>a+i.qty,0);count.textContent=qty;if(!cart.length){wrap.innerHTML='<p class="cart-empty">Your cart is currently empty.</p>';area.style.display='none';return;}area.style.display='block';wrap.innerHTML=cart.map(i=>`<div class="cart-item"><img src="${i.image}" alt="${i.name}"><div><strong>${i.name}</strong><div style="font-size:12px;color:#756c65;margin-top:4px">${money(i.price)}</div><div class="qty-controls"><button type="button" onclick="changeQty('${i.id}',-1)">−</button><span>${i.qty}</span><button type="button" onclick="changeQty('${i.id}',1)">+</button></div></div><button class="remove-item" type="button" onclick="removeItem('${i.id}')">Remove</button></div>`).join('');const total=cart.reduce((a,i)=>a+i.price*i.qty,0);document.getElementById('cartTotal').textContent=money(total);}
-window.changeQty=(id,delta)=>{const i=cart.find(x=>x.id===id);if(!i)return;i.qty+=delta;if(i.qty<=0)cart=cart.filter(x=>x.id!==id);saveCart();renderCart();};
-window.removeItem=id=>{cart=cart.filter(x=>x.id!==id);saveCart();renderCart();};
-function openCart(){document.getElementById('cartDrawer').classList.add('open');}function closeCart(){document.getElementById('cartDrawer').classList.remove('open');}
-document.getElementById('cartTrigger').onclick=openCart;document.getElementById('closeCart').onclick=closeCart;
-document.querySelectorAll('.add-cart').forEach(b=>b.onclick=()=>addToCart(b.dataset.id));
-document.querySelectorAll('.buy-now').forEach(b=>{b.onclick=()=>{cart=[];addToCart(b.dataset.id);}});
-document.getElementById('useLocation').onclick=()=>{const status=document.getElementById('locationStatus');if(!navigator.geolocation){status.textContent='Live location is not supported by this browser.';return;}status.textContent='Requesting your location…';navigator.geolocation.getCurrentPosition(pos=>{const data={lat:pos.coords.latitude,lng:pos.coords.longitude,accuracy:Math.round(pos.coords.accuracy)};document.getElementById('locationData').value=JSON.stringify(data);status.textContent='Live location added to your order details.';},()=>status.textContent='Location could not be accessed. Please enter your address manually.',{enableHighAccuracy:true,timeout:10000});};
-document.getElementById('checkoutForm').onsubmit=async e=>{e.preventDefault();if(!cart.length)return;const details={name:customerName.value.trim(),phone:customerPhone.value.trim(),email:customerEmail.value.trim(),address:customerAddress.value.trim(),location:locationData.value||null,items:cart};const subtotal=cart.reduce((a,i)=>a+Number(i.price||0)*Number(i.qty||1),0);const promo=window.AVNAUR_CHECKOUT_PROMOTION||{discount:0,total:subtotal};const amount=Math.max(0,Math.round(promo.total||subtotal));try{const {error}=await AVNAUR_SB.from('orders').insert({customer_name:details.name,phone:details.phone,customer_address:details.address,amount,status:'pending'});if(error)throw error;localStorage.setItem('avnaurPendingOrder',JSON.stringify({...details,amount}));const single=cart.length===1?PRODUCT_CATALOG[cart[0].id]:null;const link=single?.paymentLink||'';if(link){window.location.href=link;return;}alert('Order details saved. Add a Razorpay Payment Link to this product in the AVNAUR admin dashboard to continue to payment.');}catch(err){alert('Could not save your order yet. Please try again.');console.error(err);}};
-document.getElementById('reviewForm')?.addEventListener('submit',async e=>{e.preventDefault();const name=document.getElementById('reviewName').value.trim();const message=document.getElementById('reviewText').value.trim();const {error}=await AVNAUR_SB.from('feedback').insert({name,message});if(error){alert('Could not submit feedback right now.');return}document.getElementById('reviewMessage').style.display='block';e.target.reset();});
-renderCart();
-</script><script>
-/* =========================
-   AVNAUR PROMOTION SETTINGS
-   =========================
-   You can add, remove, enable or disable codes below.
-*/
-const AVNAUR_PROMOTIONS = {
-  WELCOME10: {type:'percent', value:10, label:'10% welcome discount'},
-  AVNAUR15: {type:'percent', value:15, label:'15% promotional discount'},
-  FREESHIP: {type:'shipping', value:100, label:'Free shipping'},
-  FIRST100: {type:'percent', value:15, label:'15% first customers discount'},
-  AVNAUR50: {type:'percent', value:50, label:'Flat 50% promotional discount'},
-  FREEPRODUCT: {type:'free_product', value:0, label:'One eligible AVNAUR product free'},
-  AVNAURFREE: {type:'free_gift', value:0, label:'Complimentary promotional gift added'}
+let AVNAUR_SETTINGS={whatsapp:'https://wa.me/918073092055',instagram:'https://www.instagram.com/avnaur.in/'};
+let AVNAUR_PROMOTIONS={};
+let avnaurAppliedPromo=null;
+let avnaurPromoResult={discount:0,freeShipping:false};
+
+function saveCart(){localStorage.setItem('avnaurCart',JSON.stringify(cart));}
+function getCartSubtotal(){return cart.reduce((sum,i)=>sum+Number(i.price||0)*Number(i.qty||1),0);}
+function syncSocialLinks(){
+  const wa=AVNAUR_SETTINGS.whatsapp||'https://wa.me/918073092055';
+  const ig=AVNAUR_SETTINGS.instagram||'https://www.instagram.com/avnaur.in/';
+  document.querySelectorAll('a[href*="wa.me/"]').forEach(a=>a.href=wa);
+  document.querySelectorAll('a[href*="instagram.com/"]').forEach(a=>{a.href=ig;a.target='_blank';a.rel='noopener';});
+}
+
+async function loadSettings(){
+  const {data,error}=await AVNAUR_SB.from('settings').select('whatsapp,instagram').order('id',{ascending:true}).limit(1).maybeSingle();
+  if(!error&&data) AVNAUR_SETTINGS={...AVNAUR_SETTINGS,...data};
+  syncSocialLinks();
+}
+
+async function loadPromotions(){
+  const {data,error}=await AVNAUR_SB.from('promotions').select('code,label,type,value,active').eq('active',true);
+  if(!error) (data||[]).forEach(p=>{AVNAUR_PROMOTIONS[String(p.code||'').trim().toUpperCase()]=p;});
+}
+
+function renderProductGrid(products){
+  const grid=document.querySelector('.products');
+  if(!grid) return;
+  grid.innerHTML=products.map((p,i)=>{
+    const id=String(p.id);
+    PRODUCT_CATALOG[id]={id,name:p.name||'AVNAUR Candle',price:Number(p.price||0),paymentLink:p.payment_link||'',image:p.image_url||'',description:p.description||''};
+    const image=p.image_url
+      ? `<img src="${esc(p.image_url)}" alt="${esc(p.name||'AVNAUR candle')}" loading="lazy">`
+      : `<div class="photo-fallback"><div class="photo-candle"></div></div>`;
+    const action=p.in_stock===false
+      ? `<span class="stock-btn">Out of stock</span><div class="stock-note">Currently unavailable</div>`
+      : `<div class="product-actions"><button class="btn add-cart" type="button" data-id="${esc(id)}">Add to Cart</button><button class="secondary-btn buy-now" type="button" data-id="${esc(id)}">Buy Now</button></div>`;
+    return `<article class="product-card"><div class="product-image">${image}</div><div class="product-copy"><div class="eyebrow">No. ${String(i+1).padStart(2,'0')}</div><h3>${esc(p.name)}</h3><p>${esc(p.description||'A considered AVNAUR ritual.')}</p><strong>${money(p.price)}</strong>${action}</div></article>`;
+  }).join('');
+  grid.querySelectorAll('.add-cart').forEach(b=>b.onclick=()=>addToCart(b.dataset.id));
+  grid.querySelectorAll('.buy-now').forEach(b=>b.onclick=()=>{cart=[];addToCart(b.dataset.id);});
+}
+
+async function loadProducts(){
+  const {data,error}=await AVNAUR_SB.from('products').select('id,name,description,price,image_url,payment_link,in_stock').eq('in_stock',true).order('created_at',{ascending:true});
+  if(error||!data||!data.length) return;
+  Object.keys(PRODUCT_CATALOG).forEach(k=>delete PRODUCT_CATALOG[k]);
+  renderProductGrid(data);
+  renderCart();
+}
+
+function addToCart(id){
+  const p=PRODUCT_CATALOG[id]; if(!p) return;
+  const item=cart.find(x=>String(x.id)===String(id));
+  if(item)item.qty++; else cart.push({...p,qty:1});
+  saveCart();renderCart();openCart();
+}
+function changeQty(id,delta){const i=cart.find(x=>String(x.id)===String(id));if(!i)return;i.qty+=delta;if(i.qty<=0)cart=cart.filter(x=>String(x.id)!==String(id));saveCart();renderCart();}
+function removeItem(id){cart=cart.filter(x=>String(x.id)!==String(id));saveCart();renderCart();}
+window.changeQty=changeQty;window.removeItem=removeItem;
+function openCart(){document.getElementById('cartDrawer')?.classList.add('open');}
+function closeCart(){document.getElementById('cartDrawer')?.classList.remove('open');}
+
+document.getElementById('cartTrigger')?.addEventListener('click',openCart);
+document.getElementById('closeCart')?.addEventListener('click',closeCart);
+
+document.getElementById('useLocation')?.addEventListener('click',()=>{
+  const status=document.getElementById('locationStatus');
+  if(!navigator.geolocation){status.textContent='Live location is not supported by this browser.';return;}
+  status.textContent='Requesting your location…';
+  navigator.geolocation.getCurrentPosition(pos=>{
+    document.getElementById('locationData').value=JSON.stringify({lat:pos.coords.latitude,lng:pos.coords.longitude,accuracy:Math.round(pos.coords.accuracy)});
+    status.textContent='Live location added to your order details.';
+  },()=>status.textContent='Location could not be accessed. Please enter your address manually.',{enableHighAccuracy:true,timeout:10000});
+});
+
+function updatePromoTotals(){
+  const subtotal=getCartSubtotal();
+  let discount=Number(avnaurPromoResult.discount||0);
+  const total=Math.max(0,Math.round(subtotal-discount));
+  const cartTotal=document.getElementById('cartTotal'); if(cartTotal) cartTotal.textContent=money(total);
+  const summary=document.getElementById('promoSummary');
+  if(summary&&avnaurAppliedPromo){
+    const p=AVNAUR_PROMOTIONS[avnaurAppliedPromo];
+    summary.style.display='block';summary.innerHTML=`<strong>${esc(p?.label||avnaurAppliedPromo)}</strong> · ${discount?`Save ${money(discount)}`:'Promotion applied'}`;
+  }
+  window.AVNAUR_CHECKOUT_PROMOTION={code:avnaurAppliedPromo,discount:Math.round(discount),freeShipping:!!avnaurPromoResult.freeShipping,subtotal:Math.round(subtotal),total};
+}
+window.applyPromoCode=function(){
+  const input=document.getElementById('promoCode'),msg=document.getElementById('promoMessage'),summary=document.getElementById('promoSummary');
+  const code=(input?.value||'').trim().toUpperCase();
+  const p=AVNAUR_PROMOTIONS[code];
+  if(!p){avnaurAppliedPromo=null;avnaurPromoResult={discount:0,freeShipping:false};if(msg)msg.textContent='Invalid or inactive coupon code.';if(summary)summary.style.display='none';updatePromoTotals();return;}
+  const subtotal=getCartSubtotal();
+  if(p.type==='percent') avnaurPromoResult={discount:subtotal*Number(p.value||0)/100,freeShipping:false};
+  else if(p.type==='fixed') avnaurPromoResult={discount:Math.min(subtotal,Number(p.value||0)),freeShipping:false};
+  else if(p.type==='shipping') avnaurPromoResult={discount:0,freeShipping:true};
+  else {avnaurPromoResult={discount:0,freeShipping:false};}
+  avnaurAppliedPromo=code;if(msg)msg.textContent=`${code} applied successfully.`;updatePromoTotals();
 };
 
-let avnaurAppliedPromo = null;
-let avnaurPromoResult = {discount:0, freeShipping:false, freeProduct:false, freeGift:false};
-
-function getAvnaurCart(){
-  if(typeof cart !== 'undefined' && Array.isArray(cart)) return cart;
-  if(typeof CART !== 'undefined' && Array.isArray(CART)) return CART;
-  try { return JSON.parse(localStorage.getItem('avnaurCart') || '[]'); } catch(e){ return []; }
+function renderCart(){
+  const wrap=document.getElementById('cartItems'),count=document.getElementById('cartCount'),area=document.getElementById('checkoutArea');
+  if(!wrap||!count||!area)return;
+  const qty=cart.reduce((a,i)=>a+Number(i.qty||1),0);count.textContent=qty;
+  if(!cart.length){wrap.innerHTML='<p class="cart-empty">Your cart is currently empty.</p>';area.style.display='none';return;}
+  area.style.display='block';
+  wrap.innerHTML=cart.map(i=>`<div class="cart-item"><img src="${esc(i.image||'')}" alt="${esc(i.name)}"><div><strong>${esc(i.name)}</strong><div style="font-size:12px;color:#756c65;margin-top:4px">${money(i.price)}</div><div class="qty-controls"><button type="button" onclick="changeQty('${esc(i.id)}',-1)">−</button><span>${Number(i.qty||1)}</span><button type="button" onclick="changeQty('${esc(i.id)}',1)">+</button></div></div><button class="remove-item" type="button" onclick="removeItem('${esc(i.id)}')">Remove</button></div>`).join('');
+  updatePromoTotals();
 }
 
-function getAvnaurSubtotal(){
-  const c = getAvnaurCart();
-  if(c.length){
-    return c.reduce((sum,item)=>{
-      const qty = Number(item.quantity || item.qty || 1);
-      const price = Number(item.price || (window.PRODUCT_CATALOG && PRODUCT_CATALOG[item.id] ? PRODUCT_CATALOG[item.id].price : 0) || 0);
-      return sum + price * qty;
-    },0);
-  }
-  // fallback to any existing cart total element if present
-  const totalEl = document.querySelector('#cartTotal, #checkoutTotal, [data-cart-total]');
-  if(totalEl){
-    const n = Number((totalEl.textContent || '').replace(/[^\d.]/g,''));
-    if(!Number.isNaN(n)) return n;
-  }
-  return 0;
-}
-
-function applyPromoCode(){
-  const input = document.getElementById('promoCode');
-  const msg = document.getElementById('promoMessage');
-  const summary = document.getElementById('promoSummary');
-  const code = (input ? input.value : '').trim().toUpperCase();
-
-  if(!code || !AVNAUR_PROMOTIONS[code]){
-    avnaurAppliedPromo = null;
-    avnaurPromoResult = {discount:0, freeShipping:false, freeProduct:false, freeGift:false};
-    if(msg) msg.textContent = 'Invalid coupon code. Please check and try again.';
-    if(summary) summary.style.display='none';
-    updateAvnaurPromoTotals();
-    return;
-  }
-
-  const promo = AVNAUR_PROMOTIONS[code];
-  const subtotal = getAvnaurSubtotal();
-  avnaurAppliedPromo = code;
-  avnaurPromoResult = {discount:0, freeShipping:false, freeProduct:false, freeGift:false};
-
-  if(promo.type === 'percent'){
-    avnaurPromoResult.discount = subtotal * promo.value / 100;
-  } else if(promo.type === 'shipping'){
-    avnaurPromoResult.freeShipping = true;
-  } else if(promo.type === 'free_product'){
-    avnaurPromoResult.freeProduct = true;
-  } else if(promo.type === 'free_gift'){
-    avnaurPromoResult.freeGift = true;
-  }
-
-  if(msg) msg.textContent = code + ' applied successfully.';
-  if(summary){
-    summary.style.display='block';
-    summary.innerHTML = '<strong>Promotion:</strong> ' + promo.label;
-    if(avnaurPromoResult.freeProduct) summary.innerHTML += '<div class="gift-note">Free product benefit recorded for this order.</div>';
-    if(avnaurPromoResult.freeGift) summary.innerHTML += '<div class="gift-note">Complimentary promotional gift recorded for this order.</div>';
-  }
-  updateAvnaurPromoTotals();
-}
-
-function updateAvnaurPromoTotals(){
-  const subtotal = getAvnaurSubtotal();
-  const finalTotal = Math.max(0, subtotal - avnaurPromoResult.discount);
-
-  // Expose values for the existing checkout/payment flow.
-  window.AVNAUR_CHECKOUT_PROMOTION = {
-    code: avnaurAppliedPromo,
-    discount: Math.round(avnaurPromoResult.discount),
-    freeShipping: avnaurPromoResult.freeShipping,
-    freeProduct: avnaurPromoResult.freeProduct,
-    freeGift: avnaurPromoResult.freeGift,
-    subtotal: Math.round(subtotal),
-    total: Math.round(finalTotal)
-  };
-
-  // Update common total fields without assuming a specific existing markup.
-  const discountEls = document.querySelectorAll('#discountAmount, [data-discount-amount]');
-  discountEls.forEach(el => el.textContent = '₹' + Math.round(avnaurPromoResult.discount).toLocaleString('en-IN'));
-  const finalEls = document.querySelectorAll('#finalTotal, [data-final-total]');
-  finalEls.forEach(el => el.textContent = '₹' + Math.round(finalTotal).toLocaleString('en-IN'));
-}
-
-/* Recalculate promotions whenever the existing cart changes. */
-document.addEventListener('click', function(){
-  if(avnaurAppliedPromo) setTimeout(updateAvnaurPromoTotals, 0);
+document.getElementById('checkoutForm')?.addEventListener('submit',async e=>{
+  e.preventDefault();if(!cart.length)return;
+  const name=document.getElementById('customerName').value.trim();
+  const phone=document.getElementById('customerPhone').value.trim();
+  const email=document.getElementById('customerEmail').value.trim();
+  const address=document.getElementById('customerAddress').value.trim();
+  const location=document.getElementById('locationData').value||null;
+  const promo=window.AVNAUR_CHECKOUT_PROMOTION||{discount:0,total:getCartSubtotal()};
+  const amount=Math.max(0,Math.round(promo.total||getCartSubtotal()));
+  const single=cart.length===1?PRODUCT_CATALOG[String(cart[0].id)]:null;
+  const paymentLink=single?.paymentLink||null;
+  const payload={customer_name:name,phone,customer_address:address,amount,status:'pending',email:email||null,items:cart.map(i=>({id:i.id,name:i.name,price:i.price,qty:i.qty,image:i.image||null})),promo_code:promo.code||null,discount:Number(promo.discount||0),payment_link:paymentLink,customer_location:location};
+  const button=e.target.querySelector('button[type="submit"]');if(button)button.disabled=true;
+  const {error}=await AVNAUR_SB.from('orders').insert(payload);
+  if(button)button.disabled=false;
+  if(error){console.error(error);alert('Could not save your order yet. Please try again.');return;}
+  localStorage.setItem('avnaurPendingOrder',JSON.stringify({...payload,items:cart}));
+  if(paymentLink){window.location.href=paymentLink;return;}
+  alert('Your order has been recorded as pending. Payment will be connected when the Razorpay Payment Link is added for this product.');
 });
-</script></body></html>
+
+document.getElementById('reviewForm')?.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const name=document.getElementById('reviewName').value.trim(),message=document.getElementById('reviewText').value.trim();
+  const {error}=await AVNAUR_SB.from('feedback').insert({name,message});
+  if(error){console.error(error);alert('Could not submit feedback right now. Please try again.');return;}
+  document.getElementById('reviewMessage').style.display='block';e.target.reset();
+});
+
+(async function initAvnaur(){
+  await Promise.all([loadSettings(),loadPromotions(),loadProducts()]);
+  renderCart();syncSocialLinks();
+})();
+</script>
+</body></html>
