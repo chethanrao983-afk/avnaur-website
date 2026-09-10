@@ -115,7 +115,11 @@ footer{text-align:center;padding:35px 8%;border-top:1px solid var(--line);font-s
   </div>
 </section>
 
-<footer>© 2026 AVNAUR · Premium moments, beautifully delivered.<div class="policy-links" style="margin-top:14px;font-size:12px;"><a href="#policies">Return Policy</a> &nbsp; | &nbsp; <a href="#policies">Terms & Conditions</a></div></footer><script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
+const AVNAUR_SUPABASE_URL='https://ofyejsjxmhdvxdwjflhu.supabase.co';
+const AVNAUR_SUPABASE_KEY='sb_publishable_sI2-_B0LUG9yuysnm-lw5w_7371zv4Z';
+const AVNAUR_SB=window.supabase.createClient(AVNAUR_SUPABASE_URL,AVNAUR_SUPABASE_KEY);
+</script><footer>© 2026 AVNAUR · Premium moments, beautifully delivered.<div class="policy-links" style="margin-top:14px;font-size:12px;"><a href="#policies">Return Policy</a> &nbsp; | &nbsp; <a href="#policies">Terms & Conditions</a></div><a href="admin.html" style="display:inline-block;margin-top:12px;font-size:10px;color:#756c65;text-decoration:underline">Admin</a></footer><script>
 /* ================= AVNAUR COMMERCE SETTINGS =================
    1) Set real product prices in PRODUCT_CATALOG.
    2) For Razorpay Payment Links, paste the real URL into paymentLink.
@@ -123,14 +127,29 @@ footer{text-align:center;padding:35px 8%;border-top:1px solid var(--line);font-s
       Create a backend endpoint that creates an order and verifies the payment.
 ================================================================ */
 const PRODUCT_CATALOG={
- teakwood:{name:'Teakwood',price:999,paymentLink:''},
- oudh:{name:'Oudh',price:1199,paymentLink:''},
- sandalwood:{name:'Sandalwood',price:1099,paymentLink:''}
+ teakwood:{name:'Teakwood',price:999,paymentLink:'',image:''},
+ oudh:{name:'Oudh',price:1199,paymentLink:'',image:''},
+ sandalwood:{name:'Sandalwood',price:1099,paymentLink:'',image:''}
 };
+async function AVNAUR_loadProducts(){
+ try{
+  const {data,error}=await AVNAUR_SB.from('products').select('*').eq('in_stock',true).order('created_at',{ascending:true});
+  if(error||!data?.length)return;
+  Object.keys(PRODUCT_CATALOG).forEach(k=>delete PRODUCT_CATALOG[k]);
+  data.forEach(p=>{const id=String(p.id);PRODUCT_CATALOG[id]={id,name:p.name,price:Number(p.price||0),paymentLink:p.payment_link||'',image:p.image_url||'',description:p.description||''};});
+  const grid=document.querySelector('.products');
+  if(!grid)return;
+  grid.innerHTML=data.map((p,i)=>`<article class=\"product-card\"><div class=\"product-image\">${p.image_url?`<img src=\"${String(p.image_url).replace(/\"/g,'&quot;')}\" alt=\"${String(p.name||'AVNAUR candle').replace(/\"/g,'&quot;')}\">`:'<div class=\"photo-fallback\"><div class=\"photo-candle\"></div></div>'}</div><div class=\"product-copy\"><div class=\"eyebrow\">No. ${String(i+1).padStart(2,'0')}</div><h3>${AVNAUR_escape(p.name)}</h3><p>${AVNAUR_escape(p.description||'A considered AVNAUR ritual.')}</p><strong>${money(p.price)}</strong><div class=\"product-actions\"><button class=\"btn add-cart\" type=\"button\" data-id=\"${p.id}\">Add to Cart</button><button class=\"secondary-btn buy-now\" type=\"button\" data-id=\"${p.id}\">Buy Now</button></div></div></article>`).join('');
+  document.querySelectorAll('.add-cart').forEach(b=>b.onclick=()=>addToCart(b.dataset.id));
+  document.querySelectorAll('.buy-now').forEach(b=>{b.onclick=()=>{cart=[];addToCart(b.dataset.id);}});
+ }catch(e){}
+}
+function AVNAUR_escape(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+AVNAUR_loadProducts();
 let cart=JSON.parse(localStorage.getItem('avnaurCart')||'[]');
 const money=n=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(n);
 const saveCart=()=>localStorage.setItem('avnaurCart',JSON.stringify(cart));
-function addToCart(id){const p=PRODUCT_CATALOG[id];const item=cart.find(x=>x.id===id);if(item)item.qty++;else cart.push({id,...p,qty:1});saveCart();renderCart();openCart();}
+function addToCart(id){const p=PRODUCT_CATALOG[id];if(!p)return;const item=cart.find(x=>String(x.id)===String(id));if(item)item.qty++;else cart.push({id,...p,qty:1});saveCart();renderCart();openCart();}
 function renderCart(){const wrap=document.getElementById('cartItems'), count=document.getElementById('cartCount'), area=document.getElementById('checkoutArea');const qty=cart.reduce((a,i)=>a+i.qty,0);count.textContent=qty;if(!cart.length){wrap.innerHTML='<p class="cart-empty">Your cart is currently empty.</p>';area.style.display='none';return;}area.style.display='block';wrap.innerHTML=cart.map(i=>`<div class="cart-item"><img src="${i.image}" alt="${i.name}"><div><strong>${i.name}</strong><div style="font-size:12px;color:#756c65;margin-top:4px">${money(i.price)}</div><div class="qty-controls"><button type="button" onclick="changeQty('${i.id}',-1)">−</button><span>${i.qty}</span><button type="button" onclick="changeQty('${i.id}',1)">+</button></div></div><button class="remove-item" type="button" onclick="removeItem('${i.id}')">Remove</button></div>`).join('');const total=cart.reduce((a,i)=>a+i.price*i.qty,0);document.getElementById('cartTotal').textContent=money(total);}
 window.changeQty=(id,delta)=>{const i=cart.find(x=>x.id===id);if(!i)return;i.qty+=delta;if(i.qty<=0)cart=cart.filter(x=>x.id!==id);saveCart();renderCart();};
 window.removeItem=id=>{cart=cart.filter(x=>x.id!==id);saveCart();renderCart();};
@@ -139,8 +158,8 @@ document.getElementById('cartTrigger').onclick=openCart;document.getElementById(
 document.querySelectorAll('.add-cart').forEach(b=>b.onclick=()=>addToCart(b.dataset.id));
 document.querySelectorAll('.buy-now').forEach(b=>{b.onclick=()=>{cart=[];addToCart(b.dataset.id);}});
 document.getElementById('useLocation').onclick=()=>{const status=document.getElementById('locationStatus');if(!navigator.geolocation){status.textContent='Live location is not supported by this browser.';return;}status.textContent='Requesting your location…';navigator.geolocation.getCurrentPosition(pos=>{const data={lat:pos.coords.latitude,lng:pos.coords.longitude,accuracy:Math.round(pos.coords.accuracy)};document.getElementById('locationData').value=JSON.stringify(data);status.textContent='Live location added to your order details.';},()=>status.textContent='Location could not be accessed. Please enter your address manually.',{enableHighAccuracy:true,timeout:10000});};
-document.getElementById('checkoutForm').onsubmit=e=>{e.preventDefault();if(!cart.length)return;const details={name:customerName.value.trim(),phone:customerPhone.value.trim(),email:customerEmail.value.trim(),address:customerAddress.value.trim(),location:locationData.value||null,items:cart};localStorage.setItem('avnaurPendingOrder',JSON.stringify(details));const single=cart.length===1?PRODUCT_CATALOG[cart[0].id]:null;const link=single?.paymentLink||'';if(link){window.location.href=link;return;}alert('Payment is ready to be connected. Add your Razorpay Payment Link inside PRODUCT_CATALOG. Customer delivery details have been saved locally for this checkout flow.');};
-document.getElementById('reviewForm')?.addEventListener('submit',e=>{e.preventDefault();document.getElementById('reviewMessage').style.display='block';e.target.reset();});
+document.getElementById('checkoutForm').onsubmit=async e=>{e.preventDefault();if(!cart.length)return;const details={name:customerName.value.trim(),phone:customerPhone.value.trim(),email:customerEmail.value.trim(),address:customerAddress.value.trim(),location:locationData.value||null,items:cart};const subtotal=cart.reduce((a,i)=>a+Number(i.price||0)*Number(i.qty||1),0);const promo=window.AVNAUR_CHECKOUT_PROMOTION||{discount:0,total:subtotal};const amount=Math.max(0,Math.round(promo.total||subtotal));try{const {error}=await AVNAUR_SB.from('orders').insert({customer_name:details.name,phone:details.phone,customer_address:details.address,amount,status:'pending'});if(error)throw error;localStorage.setItem('avnaurPendingOrder',JSON.stringify({...details,amount}));const single=cart.length===1?PRODUCT_CATALOG[cart[0].id]:null;const link=single?.paymentLink||'';if(link){window.location.href=link;return;}alert('Order details saved. Add a Razorpay Payment Link to this product in the AVNAUR admin dashboard to continue to payment.');}catch(err){alert('Could not save your order yet. Please try again.');console.error(err);}};
+document.getElementById('reviewForm')?.addEventListener('submit',async e=>{e.preventDefault();const name=document.getElementById('reviewName').value.trim();const message=document.getElementById('reviewText').value.trim();const {error}=await AVNAUR_SB.from('feedback').insert({name,message});if(error){alert('Could not submit feedback right now.');return}document.getElementById('reviewMessage').style.display='block';e.target.reset();});
 renderCart();
 </script><script>
 /* =========================
