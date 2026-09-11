@@ -248,16 +248,58 @@ document.getElementById('checkoutForm')?.addEventListener('submit',async e=>{
   const location=document.getElementById('locationData').value||null;
   const promo=window.AVNAUR_CHECKOUT_PROMOTION||{discount:0,total:getCartSubtotal()};
   const amount=Math.max(0,Math.round(promo.total||getCartSubtotal()));
-  const single=cart.length===1?PRODUCT_CATALOG[String(cart[0].id)]:null;
-  const paymentLink=single?.paymentLink||null;
-  const payload={customer_name:name,phone,customer_address:address,amount,status:'pending',email:email||null,items:cart.map(i=>({id:i.id,name:i.name,price:i.price,qty:i.qty,image:i.image||null})),promo_code:promo.code||null,discount:Number(promo.discount||0),payment_link:paymentLink,customer_location:location};
-  const button=e.target.querySelector('button[type="submit"]');if(button)button.disabled=true;
-  const {error}=await AVNAUR_SB.from('orders').insert(payload);
-  if(button)button.disabled=false;
-  if(error){console.error(error);alert('Could not save your order yet. Please try again.');return;}
-  localStorage.setItem('avnaurPendingOrder',JSON.stringify({...payload,items:cart}));
-  if(paymentLink){window.location.href=paymentLink;return;}
-  alert('Your order has been recorded as pending. Payment will be connected when the Razorpay Payment Link is added for this product.');
+  const payload={
+    customer_name:name,
+    phone,
+    customer_address:address,
+    amount,
+    status:'pending',
+    email:email||null,
+    items:cart.map(i=>({id:i.id,name:i.name,price:i.price,qty:i.qty,image:i.image||null})),
+    promo_code:promo.code||null,
+    discount:Number(promo.discount||0),
+    customer_location:location
+  };
+
+  const button=e.target.querySelector('button[type="submit"]');
+  if(button){button.disabled=true;button.textContent='Creating secure payment…';}
+
+  // Create the AVNAUR order first so the server can bind the payment to its exact ID.
+  const {data:order,error:orderError}=await AVNAUR_SB
+    .from('orders')
+    .insert(payload)
+    .select('id')
+    .single();
+
+  if(orderError){
+    console.error(orderError);
+    if(button){button.disabled=false;button.textContent='Place Order';}
+    alert('Could not save your order yet. Please try again.');
+    return;
+  }
+
+  // Create the unique Razorpay Payment Link server-side.
+  // Razorpay API credentials are never exposed to the browser.
+  const {data:paymentData,error:paymentError}=await AVNAUR_SB.functions.invoke('create-payment-link',{
+    body:{order_id:order.id}
+  });
+
+  if(paymentError||!paymentData?.short_url){
+    console.error('Payment link creation failed:',paymentError||paymentData);
+    if(button){button.disabled=false;button.textContent='Place Order';}
+    alert('Your order was saved, but we could not start the payment. Please try again.');
+    return;
+  }
+
+  localStorage.setItem('avnaurPendingOrder',JSON.stringify({
+    ...payload,
+    order_id:order.id,
+    payment_link_id:paymentData.payment_link_id||null,
+    payment_url:paymentData.short_url,
+    items:cart
+  }));
+
+  window.location.href=paymentData.short_url;
 });
 
 document.getElementById('reviewForm')?.addEventListener('submit',async e=>{
