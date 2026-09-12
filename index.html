@@ -351,20 +351,37 @@ document.getElementById('checkoutForm')?.addEventListener('submit',async e=>{
       return;
     }
 
+    // Fetch the newly-created order ID using the signed-in customer's RLS access.
+    // Passing the order ID to the Edge Function is more reliable than relying only
+    // on reference lookup, while the reference ID remains attached for matching.
+    const {data:createdOrder,error:lookupError}=await AVNAUR_SB.from('orders')
+      .select('id,razorpay_reference_id')
+      .eq('user_id',user.id)
+      .eq('razorpay_reference_id',referenceId)
+      .single();
+
+    if(lookupError||!createdOrder?.id){
+      console.error('New order lookup failed:',lookupError);
+      if(button){button.disabled=false;button.textContent='Proceed to Payment';}
+      alert('Your order was saved, but its payment setup could not be completed. Please try again.');
+      return;
+    }
+
     const {data:paymentData,error:paymentError}=await AVNAUR_SB.functions.invoke('create-payment-link',{
-      body:{reference_id:referenceId}
+      body:{order_id:createdOrder.id,reference_id:referenceId}
     });
 
     if(paymentError||!paymentData?.short_url){
       console.error('Payment link creation failed:',paymentError||paymentData);
       if(button){button.disabled=false;button.textContent='Proceed to Payment';}
-      alert('Your order was saved, but payment could not be started. Please try again.');
+      const detail=paymentError?.message||paymentData?.error||'Please try again.';
+      alert('Your order was saved, but payment could not be started. '+detail);
       return;
     }
 
     localStorage.setItem('avnaurPendingOrder',JSON.stringify({
       ...payload,
-      order_id:paymentData.order_id||null,
+      order_id:createdOrder.id,
       payment_link_id:paymentData.payment_link_id||null,
       payment_url:paymentData.short_url,
       items:cart
