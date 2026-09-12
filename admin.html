@@ -190,6 +190,25 @@ $('clearOrderFilter').onclick=()=>{
   loadOrders();
 };
 
+// Live order updates: refresh the dashboard immediately when Supabase changes an order.
+let ordersRealtimeChannel=null;
+function startOrdersRealtime(){
+  if(ordersRealtimeChannel) sb.removeChannel(ordersRealtimeChannel);
+  ordersRealtimeChannel=sb.channel('avnaur-orders-live')
+    .on('postgres_changes',{event:'*',schema:'public',table:'orders'},()=>{
+      loadOrders();
+    })
+    .subscribe((status)=>{
+      console.log('AVNAUR orders realtime:',status);
+    });
+}
+
+window.addEventListener('beforeunload',()=>{
+  if(ordersRealtimeChannel) sb.removeChannel(ordersRealtimeChannel);
+});
+
+startOrdersRealtime();
+
 async function loadFeedback(){const {data,error}=await sb.from('feedback').select('*').order('created_at',{ascending:false});if(error){$('feedbackList').innerHTML='<div class="empty">'+esc(error.message)+'</div>';return}feedback=data||[];$('statFeedback').textContent=feedback.length;$('feedbackList').innerHTML=feedback.length?feedback.map(f=>`<div class="row"><div class="row-title">${esc(f.name||'Customer')}</div><div class="row-meta" style="font-family:'Playfair Display',serif;font-size:18px;color:var(--ink)">${esc(f.message||'')}</div><div class="row-meta">${f.created_at?new Date(f.created_at).toLocaleString('en-IN'):''}</div></div>`).join(''):'<div class="empty">No feedback yet.</div>'}$('refreshFeedback').onclick=loadFeedback;
 async function loadPromotions(){const {data,error}=await sb.from('promotions').select('*').order('created_at',{ascending:false});if(error){$('promotionList').innerHTML='<div class="empty">'+esc(error.message)+'</div>';return}promotions=data||[];$('promotionList').innerHTML=promotions.length?promotions.map(p=>`<div class="row"><div class="row-main"><div><div class="row-title">${esc(p.code)}</div><div class="row-meta">${esc(p.label||'')} · ${p.type==='percent'?esc(p.value)+'% discount':p.type==='fixed'?money(p.value)+' discount':esc(p.type)}</div></div><span class="status">${p.active?'Active':'Inactive'}</span></div><div class="actions"><button onclick="editPromotion(${p.id})">Edit</button><button onclick="deletePromotion(${p.id})">Delete</button></div></div>`).join(''):'<div class="empty">No promotions yet.</div>'}
 $('promoForm').onsubmit=async e=>{e.preventDefault();const id=$('promoId').value;const payload={code:$('promoCode').value.trim().toUpperCase(),label:$('promoLabel').value.trim(),type:$('promoType').value,value:Number($('promoValue').value||0),active:$('promoActive').value==='true'};const {error}=id?await sb.from('promotions').update(payload).eq('id',id):await sb.from('promotions').insert(payload);if(error){msg('promoMessage',error.message);return}msg('promoMessage','Promotion saved.',true);clearPromotion();loadPromotions()};window.editPromotion=id=>{const p=promotions.find(x=>String(x.id)===String(id));if(!p)return;$('promoId').value=p.id;$('promoCode').value=p.code||'';$('promoLabel').value=p.label||'';$('promoType').value=p.type||'percent';$('promoValue').value=p.value??0;$('promoActive').value=String(p.active!==false);$('promoFormTitle').textContent='Edit promotion'};window.deletePromotion=async id=>{if(!confirm('Delete this promotion?'))return;const {error}=await sb.from('promotions').delete().eq('id',id);if(error)alert(error.message);else loadPromotions()};function clearPromotion(){$('promoId').value='';$('promoForm').reset();$('promoType').value='percent';$('promoValue').value='10';$('promoActive').value='true';$('promoFormTitle').textContent='Add promotion'}$('clearPromotion').onclick=clearPromotion;$('refreshPromotions').onclick=loadPromotions;
