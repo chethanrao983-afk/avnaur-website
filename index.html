@@ -240,7 +240,9 @@ function renderCart(){
 }
 
 document.getElementById('checkoutForm')?.addEventListener('submit',async e=>{
-  e.preventDefault();if(!cart.length)return;
+  e.preventDefault();
+  if(!cart.length)return;
+
   const name=document.getElementById('customerName').value.trim();
   const phone=document.getElementById('customerPhone').value.trim();
   const email=document.getElementById('customerEmail').value.trim();
@@ -248,6 +250,11 @@ document.getElementById('checkoutForm')?.addEventListener('submit',async e=>{
   const location=document.getElementById('locationData').value||null;
   const promo=window.AVNAUR_CHECKOUT_PROMOTION||{discount:0,total:getCartSubtotal()};
   const amount=Math.max(0,Math.round(promo.total||getCartSubtotal()));
+
+  // Create the reference BEFORE inserting the order.
+  // This avoids needing a browser SELECT permission just to obtain the new order ID.
+  const referenceId='AVNAUR-'+Date.now()+'-'+Math.random().toString(36).slice(2,8).toUpperCase();
+
   const payload={
     customer_name:name,
     phone,
@@ -258,48 +265,53 @@ document.getElementById('checkoutForm')?.addEventListener('submit',async e=>{
     items:cart.map(i=>({id:i.id,name:i.name,price:i.price,qty:i.qty,image:i.image||null})),
     promo_code:promo.code||null,
     discount:Number(promo.discount||0),
-    customer_location:location
+    customer_location:location,
+    razorpay_reference_id:referenceId,
+    payment_status:'pending'
   };
 
   const button=e.target.querySelector('button[type="submit"]');
   if(button){button.disabled=true;button.textContent='Creating secure payment…';}
 
-  // Create the AVNAUR order first so the server can bind the payment to its exact ID.
-  const {data:order,error:orderError}=await AVNAUR_SB
-    .from('orders')
-    .insert(payload)
-    .select('id')
-    .single();
+  try{
+    // IMPORTANT: do NOT use .select().single() here.
+    // Your public checkout can INSERT the order, but may not have SELECT permission.
+    const {error:orderError}=await AVNAUR_SB.from('orders').insert(payload);
 
-  if(orderError){
-    console.error(orderError);
+    if(orderError){
+      console.error('Order insert failed:',orderError);
+      if(button){button.disabled=false;button.textContent='Place Order';}
+      alert('Could not save your order yet. '+(orderError.message||'Please try again.'));
+      return;
+    }
+
+    // The Edge Function finds the exact order by our unique reference ID.
+    const {data:paymentData,error:paymentError}=await AVNAUR_SB.functions.invoke('create-payment-link',{
+      body:{reference_id:referenceId}
+    });
+
+    if(paymentError||!paymentData?.short_url){
+      console.error('Payment link creation failed:',paymentError||paymentData);
+      if(button){button.disabled=false;button.textContent='Place Order';}
+      alert('Your order was saved, but payment could not be started. Please try again.');
+      return;
+    }
+
+    localStorage.setItem('avnaurPendingOrder',JSON.stringify({
+      ...payload,
+      order_id:paymentData.order_id||null,
+      payment_link_id:paymentData.payment_link_id||null,
+      payment_url:paymentData.short_url,
+      items:cart
+    }));
+
+    // Send the customer directly to the unique Razorpay Payment Link.
+    window.location.href=paymentData.short_url;
+  }catch(err){
+    console.error('Checkout error:',err);
     if(button){button.disabled=false;button.textContent='Place Order';}
-    alert('Could not save your order yet. Please try again.');
-    return;
+    alert('Something went wrong while starting your payment. Please try again.');
   }
-
-  // Create the unique Razorpay Payment Link server-side.
-  // Razorpay API credentials are never exposed to the browser.
-  const {data:paymentData,error:paymentError}=await AVNAUR_SB.functions.invoke('create-payment-link',{
-    body:{order_id:order.id}
-  });
-
-  if(paymentError||!paymentData?.short_url){
-    console.error('Payment link creation failed:',paymentError||paymentData);
-    if(button){button.disabled=false;button.textContent='Place Order';}
-    alert('Your order was saved, but we could not start the payment. Please try again.');
-    return;
-  }
-
-  localStorage.setItem('avnaurPendingOrder',JSON.stringify({
-    ...payload,
-    order_id:order.id,
-    payment_link_id:paymentData.payment_link_id||null,
-    payment_url:paymentData.short_url,
-    items:cart
-  }));
-
-  window.location.href=paymentData.short_url;
 });
 
 document.getElementById('reviewForm')?.addEventListener('submit',async e=>{
