@@ -112,7 +112,7 @@ footer{text-align:center;padding:35px 8%;border-top:1px solid var(--line);font-s
     <div id="accountLoginView">
       <div class="eyebrow">AVNAUR Account</div>
       <h2>Welcome back.</h2>
-      <p class="account-note">Sign in with your phone number. We’ll send a one-time verification code.</p>
+      <p class="account-note">We’re currently awaiting regulatory approval for Phone OTP verification. In the meantime, email login is available so you can access your account and orders without interruption.</p>
       <form class="account-form" id="phoneLoginForm">
         <input id="loginPhone" required inputmode="tel" autocomplete="tel" placeholder="Phone number (e.g. 9876543210)">
         <button class="btn" type="submit" id="sendOtpBtn">Send OTP</button>
@@ -124,6 +124,15 @@ footer{text-align:center;padding:35px 8%;border-top:1px solid var(--line);font-s
         </form>
         <button class="secondary-btn" type="button" id="changePhoneBtn" style="margin-top:10px">Change number</button>
       </div>
+      <div style="margin:22px 0 10px;display:flex;align-items:center;gap:10px;color:var(--muted);font-size:11px;letter-spacing:.8px;text-transform:uppercase;"><span style="height:1px;background:var(--line);flex:1"></span><span>or use email</span><span style="height:1px;background:var(--line);flex:1"></span></div>
+      <form class="account-form" id="emailLoginForm">
+        <input id="loginEmail" required type="email" autocomplete="email" placeholder="Email address">
+        <input id="loginPassword" required type="password" minlength="8" autocomplete="current-password" placeholder="Password (8+ characters)">
+        <div class="account-actions" style="margin-top:4px">
+          <button class="btn" type="submit" id="emailLoginBtn">Login with Email</button>
+          <button class="secondary-btn" type="button" id="emailSignupBtn">Create Account</button>
+        </div>
+      </form>
       <p class="account-message" id="accountMessage"></p>
     </div>
     <div id="accountUserView" style="display:none">
@@ -301,7 +310,7 @@ document.getElementById('checkoutForm')?.addEventListener('submit',async e=>{
 
   const {data:{user}}=await AVNAUR_SB.auth.getUser();
   if(!user){
-    openAccountModal('Please sign in with your phone number before placing an order.');
+    openAccountModal('Please sign in with Phone OTP or email before placing an order. Your cart will stay saved.');
     return;
   }
 
@@ -444,7 +453,9 @@ async function refreshAccountUI(){
     if(loginView)loginView.style.display='none';
     if(userView)userView.style.display='block';
     const phone=user.phone||'';
-    const label=document.getElementById('accountPhoneLabel');if(label)label.textContent=phone?'Signed in as '+phone:'Signed in';
+    const identity=phone||user.email||'';
+    const label=document.getElementById('accountPhoneLabel');if(label)label.textContent=identity?'Signed in as '+identity:'Signed in';
+    const checkoutEmail=document.getElementById('customerEmail');if(checkoutEmail && user.email && !checkoutEmail.value) checkoutEmail.value=user.email;
     const welcome=document.getElementById('accountWelcome');if(welcome)welcome.textContent='My Account';
   }else{
     if(trigger)trigger.textContent='Login';
@@ -481,6 +492,40 @@ document.getElementById('otpForm')?.addEventListener('submit',async e=>{
   await refreshAccountUI();
   await loadCustomerOrders();
   document.getElementById('ordersView').style.display='block';
+});
+
+document.getElementById('emailLoginForm')?.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const email=document.getElementById('loginEmail').value.trim().toLowerCase();
+  const password=document.getElementById('loginPassword').value;
+  const btn=document.getElementById('emailLoginBtn');
+  if(btn){btn.disabled=true;btn.textContent='Signing in…';}
+  const {error}=await AVNAUR_SB.auth.signInWithPassword({email,password});
+  if(btn){btn.disabled=false;btn.textContent='Login with Email';}
+  if(error){console.error(error);setAccountMessage(error.message||'Could not sign in with email.');return;}
+  setAccountMessage('Signed in successfully.');
+  await refreshAccountUI();
+  document.getElementById('ordersView').style.display='block';
+  await loadCustomerOrders();
+});
+
+document.getElementById('emailSignupBtn')?.addEventListener('click',async()=>{
+  const email=document.getElementById('loginEmail').value.trim().toLowerCase();
+  const password=document.getElementById('loginPassword').value;
+  if(!email||password.length<8){setAccountMessage('Enter your email and a password of at least 8 characters.');return;}
+  const btn=document.getElementById('emailSignupBtn');
+  if(btn){btn.disabled=true;btn.textContent='Creating…';}
+  const {data,error}=await AVNAUR_SB.auth.signUp({email,password});
+  if(btn){btn.disabled=false;btn.textContent='Create Account';}
+  if(error){console.error(error);setAccountMessage(error.message||'Could not create your account.');return;}
+  if(data?.session){
+    setAccountMessage('Account created and signed in successfully.');
+    await refreshAccountUI();
+    document.getElementById('ordersView').style.display='block';
+    await loadCustomerOrders();
+  }else{
+    setAccountMessage('Account created. Please check your email to verify your account, then log in.');
+  }
 });
 
 document.getElementById('changePhoneBtn')?.addEventListener('click',()=>{document.getElementById('otpArea').style.display='none';document.getElementById('otpCode').value='';setAccountMessage('');});
