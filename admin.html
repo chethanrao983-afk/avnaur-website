@@ -8,15 +8,15 @@
 .location-box{margin-top:10px;padding:10px 12px;border:1px solid var(--line);background:var(--cream);font-size:12px;line-height:1.6}
 .location-link{display:inline-block;margin-top:5px;text-decoration:underline;color:var(--ink)}.staff-role{font-size:10px;text-transform:uppercase;letter-spacing:1px;padding:5px 8px;border:1px solid var(--line)}.staff-grid{display:grid;grid-template-columns:1fr 1.5fr;gap:22px}@media(max-width:900px){.staff-grid{grid-template-columns:1fr}}
 .order-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}@media(max-width:900px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
-</style></head><body><header class="top"><div class="brand">AVNAUR</div><div class="admin-tag">Control room</div></header>
+</style></head><body><header class="top"><div class="brand">AVNAUR</div><div class="admin-tag" id="roleTag">Control room</div></header>
 <section id="loginView" class="login"><div class="login-card"><div class="eyebrow">Private area</div><h1>Welcome back, Mr. Rao</h1><p style="color:var(--muted);line-height:1.7">Sign in to manage AVNAUR.</p><form id="loginForm"><div class="field"><label>Email</label><input id="loginEmail" type="email" required autocomplete="username"></div><div class="field"><label>Password</label><input id="loginPassword" type="password" required autocomplete="current-password"></div><button class="btn" type="submit">Sign in</button><div id="loginMessage" class="message"></div></form></div></section>
-<main id="app" class="wrap hidden"><div class="toolbar"><div><div class="eyebrow">AVNAUR control room</div><h1 style="font-family:'Playfair Display',serif;font-size:48px;font-weight:500;margin:8px 0">Welcome back, Mr. Rao</h1><p style="color:var(--muted);margin:0">Here's what's happening with AVNAUR today.</p></div><button class="btn secondary" id="logoutBtn">Log out</button></div>
+<main id="app" class="wrap hidden"><div class="toolbar"><div><div class="eyebrow">AVNAUR control room</div><h1 id="welcomeTitle" style="font-family:'Playfair Display',serif;font-size:48px;font-weight:500;margin:8px 0">Welcome back, Mr. Rao</h1><p id="welcomeText" style="color:var(--muted);margin:0">Here's what's happening with AVNAUR today.</p></div><button class="btn secondary" id="logoutBtn">Log out</button></div>
 <div class="stats"><div class="stat"><div class="eyebrow">Products</div><b id="statProducts">0</b></div><div class="stat"><div class="eyebrow">Orders</div><b id="statOrders">0</b></div><div class="stat"><div class="eyebrow">Paid orders</div><b id="statPaid">0</b></div><div class="stat"><div class="eyebrow">Revenue</div><b id="statRevenue">₹0</b></div><div class="stat"><div class="eyebrow">Feedback</div><b id="statFeedback">0</b></div></div>
 <nav class="nav"><button class="active" data-tab="products">Products</button><button data-tab="orders">Orders</button><button data-tab="feedback">Feedback</button><button data-tab="promotions">Promotions</button><button data-tab="settings">Settings</button><button data-tab="staff" id="staffTab" class="hidden">Staff</button></nav>
 <section id="tab-products"><div class="grid"><div class="card"><h2 id="productFormTitle">Add product</h2><form id="productForm"><input type="hidden" id="productId"><div class="field"><label>Name</label><input id="pName" required></div><div class="field"><label>Description</label><textarea id="pDescription"></textarea></div><div class="field"><label>Price (₹)</label><input id="pPrice" type="number" min="0" step="1" required></div><div class="field"><label>Product image</label><input id="pImageFile" type="file" accept="image/*"><img id="pPreview" class="preview hidden" alt="Product preview"><input id="pImage" type="hidden"></div><div class="field"><label>Razorpay payment link</label><input id="pPayment" type="url" placeholder="https://rzp.io/..."><div class="row-meta">Leave blank until your Razorpay payment link is ready.</div></div><div class="field"><label>Stock</label><select id="pStock"><option value="true">In stock</option><option value="false">Out of stock</option></select></div><div class="actions"><button class="btn" type="submit">Save product</button><button class="btn secondary" type="button" id="cancelProduct">Clear</button></div><div id="productMessage" class="message"></div></form></div><div class="card"><div class="toolbar"><h2>Products</h2><button class="btn secondary" id="refreshProducts">Refresh</button></div><div id="productList" class="list"></div></div></div></section>
 <section id="tab-orders" class="hidden"><div class="card">
 <div class="toolbar"><h2>Orders</h2><button class="btn secondary" id="refreshOrders">Refresh</button></div>
-<div class="note">Payment status is verified by the Razorpay webhook. Order status controls fulfilment. Customer location is shown only when the customer chose <strong>Use Live Location</strong>.</div>
+<div class="note">Payment status is verified by the Razorpay webhook. Order status controls fulfilment. Customer location is shown only when the customer chose <strong>Use Live Location</strong>.</div><div id="employeeOrderNote" class="note hidden">Employee access: you can view orders and update fulfilment status. Owner-only settings are hidden.</div>
 <div class="order-tools">
 <input id="orderSearch" type="search" placeholder="Search order ID, customer, phone or email">
 <select id="orderFilter">
@@ -59,10 +59,47 @@ async function init(){
   if(session){currentSession=session;await resolveOwnerState();showApp();}else showLogin();
 }
 async function resolveOwnerState(){
-  const ownerEmail=(localStorage.getItem('AVNAUR_OWNER_EMAIL')||'').trim().toLowerCase();
-  currentIsOwner=!!currentSession?.user?.email && !!ownerEmail &&
-    currentSession.user.email.toLowerCase()===ownerEmail;
+  currentIsOwner=false;
+  if(!currentSession?.user?.id){
+    $('staffTab').classList.add('hidden');
+    return;
+  }
+
+  const {data,error}=await sb.from('staff_roles')
+    .select('role')
+    .eq('user_id',currentSession.user.id)
+    .maybeSingle();
+
+  if(!error && data?.role==='owner') currentIsOwner=true;
+
   $('staffTab').classList.toggle('hidden',!currentIsOwner);
+  $('roleTag').textContent=currentIsOwner?'Owner · Control room':'Employee · Control room';
+  $('employeeOrderNote').classList.toggle('hidden',currentIsOwner);
+
+  // Employees only need the Orders area. Owner keeps full Control Room access.
+  document.querySelectorAll('.nav button').forEach(btn=>{
+    if(btn.dataset.tab==='staff'){
+      btn.classList.toggle('hidden',!currentIsOwner);
+      return;
+    }
+    const ownerOnly=['products','feedback','promotions','settings'].includes(btn.dataset.tab);
+    btn.classList.toggle('hidden',!currentIsOwner && ownerOnly);
+  });
+
+  $('welcomeTitle').textContent=currentIsOwner
+    ? 'Welcome back, Mr. Rao'
+    : 'Welcome to AVNAUR';
+  $('welcomeText').textContent=currentIsOwner
+    ? "Here's what's happening with AVNAUR today."
+    : "Manage customer orders and fulfilment.";
+
+  if(!currentIsOwner){
+    const ordersBtn=document.querySelector('.nav button[data-tab="orders"]');
+    document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+    ordersBtn.classList.add('active');
+    ['products','orders','feedback','promotions','settings','staff']
+      .forEach(t=>$('tab-'+t).classList.toggle('hidden',t!=='orders'));
+  }
 }
 function showLogin(){$('loginView').classList.remove('hidden');$('app').classList.add('hidden')}
 function showApp(){$('loginView').classList.add('hidden');$('app').classList.remove('hidden');loadAll();if(currentIsOwner)loadStaff()}
