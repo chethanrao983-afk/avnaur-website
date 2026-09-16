@@ -124,6 +124,9 @@ footer{text-align:center;padding:35px 8%;border-top:1px solid var(--line);font-s
 .hero-media{margin-top:34px;}
 .hero-media img[hidden]{display:none!important;}
 .hero-media video[hidden]{display:none!important;}
+/* Homepage media is optional: when disabled, the original hero is restored. */
+.hero{grid-template-columns:1fr!important;}
+.hero-media.is-disabled{display:none!important;}
 </style>
 </style>
 <style id="avnaur-premium-visual">
@@ -399,11 +402,17 @@ function applyHomepageMedia(){
   const active=AVNAUR_SETTINGS.homepage_media_active === true;
   const url=String(AVNAUR_SETTINGS.homepage_media_url || '').trim();
   const type=String(AVNAUR_SETTINGS.homepage_media_type || '').toLowerCase();
+  const mediaWrap=document.getElementById('homepageMedia');
   if(!active || !url){
-    video.hidden=false;
+    /* No active homepage media: return to the original AVNAUR hero. */
+    if(mediaWrap) mediaWrap.classList.add('is-disabled');
+    video.pause();
+    video.hidden=true;
     image.hidden=true;
+    image.removeAttribute('src');
     return;
   }
+  if(mediaWrap) mediaWrap.classList.remove('is-disabled');
   if(type === 'image'){
     video.pause();
     video.hidden=true;
