@@ -8,11 +8,16 @@
 .location-box{margin-top:10px;padding:10px 12px;border:1px solid var(--line);background:var(--cream);font-size:12px;line-height:1.6}
 .location-link{display:inline-block;margin-top:5px;text-decoration:underline;color:var(--ink)}
 .order-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}@media(max-width:900px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+
+.homepage-media-preview{max-width:100%;max-height:260px;object-fit:contain;background:var(--cream);border:1px solid var(--line);padding:8px}
+.media-current{padding:18px;border:1px solid var(--line);background:#fff}
+.media-current video,.media-current img{display:block;width:100%;max-height:280px;object-fit:contain;background:var(--cream)}
+.media-badge{display:inline-block;margin-bottom:10px}
 </style></head><body><header class="top"><div class="brand">AVNAUR</div><div class="admin-tag">Control room</div></header>
 <section id="loginView" class="login"><div class="login-card"><div class="eyebrow">Private area</div><h1>Welcome back, Mr. Rao</h1><p style="color:var(--muted);line-height:1.7">Sign in to manage AVNAUR.</p><form id="loginForm"><div class="field"><label>Email</label><input id="loginEmail" type="email" required autocomplete="username"></div><div class="field"><label>Password</label><input id="loginPassword" type="password" required autocomplete="current-password"></div><button class="btn" type="submit">Sign in</button><div id="loginMessage" class="message"></div></form></div></section>
 <main id="app" class="wrap hidden"><div class="toolbar"><div><div class="eyebrow">AVNAUR control room</div><h1 style="font-family:'Playfair Display',serif;font-size:48px;font-weight:500;margin:8px 0">Welcome back, Mr. Rao</h1><p style="color:var(--muted);margin:0">Here's what's happening with AVNAUR today.</p></div><button class="btn secondary" id="logoutBtn">Log out</button></div>
 <div class="stats"><div class="stat"><div class="eyebrow">Products</div><b id="statProducts">0</b></div><div class="stat"><div class="eyebrow">Orders</div><b id="statOrders">0</b></div><div class="stat"><div class="eyebrow">Paid orders</div><b id="statPaid">0</b></div><div class="stat"><div class="eyebrow">Revenue</div><b id="statRevenue">₹0</b></div><div class="stat"><div class="eyebrow">Feedback</div><b id="statFeedback">0</b></div></div>
-<nav class="nav"><button class="active" data-tab="products">Products</button><button data-tab="orders">Orders</button><button data-tab="feedback">Feedback</button><button data-tab="promotions">Promotions</button><button data-tab="settings">Settings</button></nav>
+<nav class="nav"><button class="active" data-tab="products">Products</button><button data-tab="orders">Orders</button><button data-tab="feedback">Feedback</button><button data-tab="promotions">Promotions</button><button data-tab="settings">Settings</button><button data-tab="homepage-media">Homepage Media</button></nav>
 <section id="tab-products"><div class="grid"><div class="card"><h2 id="productFormTitle">Add product</h2><form id="productForm"><input type="hidden" id="productId"><div class="field"><label>Name</label><input id="pName" required></div><div class="field"><label>Description</label><textarea id="pDescription"></textarea></div><div class="field"><label>Price (₹)</label><input id="pPrice" type="number" min="0" step="1" required></div><div class="field"><label>Product image</label><input id="pImageFile" type="file" accept="image/*"><img id="pPreview" class="preview hidden" alt="Product preview"><input id="pImage" type="hidden"></div><div class="field"><label>Razorpay payment link</label><input id="pPayment" type="url" placeholder="https://rzp.io/..."><div class="row-meta">Leave blank until your Razorpay payment link is ready.</div></div><div class="field"><label>Stock</label><select id="pStock"><option value="true">In stock</option><option value="false">Out of stock</option></select></div><div class="actions"><button class="btn" type="submit">Save product</button><button class="btn secondary" type="button" id="cancelProduct">Clear</button></div><div id="productMessage" class="message"></div></form></div><div class="card"><div class="toolbar"><h2>Products</h2><button class="btn secondary" id="refreshProducts">Refresh</button></div><div id="productList" class="list"></div></div></div></section>
 <section id="tab-orders" class="hidden"><div class="card">
 <div class="toolbar"><h2>Orders</h2><button class="btn secondary" id="refreshOrders">Refresh</button></div>
@@ -34,6 +39,59 @@
 </div></section>
 <section id="tab-feedback" class="hidden"><div class="card"><div class="toolbar"><h2>Customer feedback</h2><button class="btn secondary" id="refreshFeedback">Refresh</button></div><div id="feedbackList" class="list"></div></div></section>
 <section id="tab-promotions" class="hidden"><div class="grid"><div class="card"><h2 id="promoFormTitle">Add promotion</h2><form id="promoForm"><input type="hidden" id="promoId"><div class="field"><label>Code</label><input id="promoCode" required placeholder="WELCOME10"></div><div class="field"><label>Label</label><input id="promoLabel" required placeholder="10% welcome discount"></div><div class="field"><label>Type</label><select id="promoType"><option value="percent">Percentage discount</option><option value="fixed">Fixed discount (₹)</option><option value="shipping">Free shipping</option></select></div><div class="field"><label>Value</label><input id="promoValue" type="number" min="0" step="1" value="10"></div><div class="field"><label>Status</label><select id="promoActive"><option value="true">Active</option><option value="false">Inactive</option></select></div><div class="actions"><button class="btn" type="submit">Save promotion</button><button class="btn secondary" type="button" id="clearPromotion">Clear</button></div><div id="promoMessage" class="message"></div></form></div><div class="card"><div class="toolbar"><h2>Promotions</h2><button class="btn secondary" id="refreshPromotions">Refresh</button></div><div id="promotionList" class="list"></div></div></div></section>
+
+<section id="tab-homepage-media" class="hidden">
+  <div class="grid">
+    <div class="card">
+      <h2>Homepage media</h2>
+      <p class="note">Upload the media that should appear in the opening section of the AVNAUR website. Choose either a video or an image.</p>
+
+      <form id="homepageMediaForm">
+        <div class="field">
+          <label>Media type</label>
+          <select id="mediaType">
+            <option value="video">Video (MP4)</option>
+            <option value="image">Image (JPEG / PNG / WebP)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Upload file</label>
+          <input id="mediaFile" type="file" accept="video/mp4,image/jpeg,image/png,image/webp" required>
+          <div id="mediaFileNote" class="row-meta">MP4 video recommended for the AVNAUR opening.</div>
+        </div>
+
+        <div id="mediaPreviewBox" class="field">
+          <label>Preview</label>
+          <video id="mediaVideoPreview" class="preview hidden" controls muted playsinline></video>
+          <img id="mediaImagePreview" class="preview hidden" alt="Homepage media preview">
+        </div>
+
+        <div class="field">
+          <label>Status</label>
+          <select id="mediaActive">
+            <option value="true">Use this on homepage</option>
+            <option value="false">Save but don't display</option>
+          </select>
+        </div>
+
+        <div class="actions">
+          <button class="btn" type="submit">Upload & save</button>
+          <button class="btn secondary" type="button" id="clearHomepageMedia">Clear</button>
+        </div>
+        <div id="homepageMediaMessage" class="message"></div>
+      </form>
+    </div>
+
+    <div class="card">
+      <div class="toolbar">
+        <h2>Current homepage media</h2>
+        <button class="btn secondary" id="refreshHomepageMedia">Refresh</button>
+      </div>
+      <div id="homepageMediaList" class="list"></div>
+    </div>
+  </div>
+</section>
 <section id="tab-settings" class="hidden"><div class="card"><h2>Store settings</h2><form id="settingsForm"><div class="field"><label>WhatsApp link</label><input id="sWhatsapp" type="url" placeholder="https://wa.me/..."></div><div class="field"><label>Instagram link</label><input id="sInstagram" type="url" placeholder="https://www.instagram.com/..."></div><div class="actions"><button class="btn" type="submit">Save settings</button><button class="btn secondary" type="button" id="refreshSettings">Refresh</button></div><div id="settingsMessage" class="message"></div></form></div></section>
 </main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const SUPABASE_URL='https://ofyejsjxmhdvxdwjflhu.supabase.co';const SUPABASE_KEY='sb_publishable_sI2-_B0LUG9yuysnm-lw5w_7371zv4Z';const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);const $=id=>document.getElementById(id);const money=n=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(Number(n||0));const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let products=[],orders=[],feedback=[],promotions=[];
@@ -41,7 +99,7 @@ function msg(id,text,ok=false){$(id).textContent=text;$(id).className=ok?'messag
 async function init(){const {data:{session}}=await sb.auth.getSession();session?showApp():showLogin();}
 function showLogin(){$('loginView').classList.remove('hidden');$('app').classList.add('hidden')}function showApp(){$('loginView').classList.add('hidden');$('app').classList.remove('hidden');loadAll()}
 $('loginForm').onsubmit=async e=>{e.preventDefault();msg('loginMessage','Signing in…',true);const {error}=await sb.auth.signInWithPassword({email:$('loginEmail').value.trim(),password:$('loginPassword').value});if(error){msg('loginMessage',error.message);return}showApp()};$('logoutBtn').onclick=async()=>{await sb.auth.signOut();showLogin()};
-document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');['products','orders','feedback','promotions','settings'].forEach(t=>$('tab-'+t).classList.toggle('hidden',t!==b.dataset.tab));});
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');['products','orders','feedback','promotions','settings','homepage-media'].forEach(t=>$('tab-'+t).classList.toggle('hidden',t!==b.dataset.tab));});
 async function loadAll(){await Promise.all([loadProducts(),loadOrders(),loadFeedback(),loadPromotions(),loadSettings()])}
 async function loadProducts(){const {data,error}=await sb.from('products').select('*').order('created_at',{ascending:false});if(error){$('productList').innerHTML='<div class="empty">'+esc(error.message)+'</div>';return}products=data||[];$('statProducts').textContent=products.length;$('productList').innerHTML=products.length?products.map(p=>`<div class="row"><div class="row-main"><div><div class="row-title">${esc(p.name||'Unnamed product')}</div><div class="row-meta">${money(p.price)} · ${p.in_stock===false?'Out of stock':'In stock'}</div></div><span class="status">${p.in_stock===false?'Hidden':'Live'}</span></div><div class="row-meta">${esc(p.description||'No description')}</div>${p.image_url?`<img class="preview" src="${esc(p.image_url)}" alt="">`:''}<div class="actions"><button onclick="editProduct(${p.id})">Edit</button><button onclick="deleteProduct(${p.id})">Delete</button></div></div>`).join(''):'<div class="empty">No products yet.</div>'}
 $('productForm').onsubmit=async e=>{e.preventDefault();const id=$('productId').value;const file=$('pImageFile').files[0];let imageUrl=$('pImage').value.trim()||null;if(file){if(!file.type.startsWith('image/')){msg('productMessage','Please choose an image file.');return}const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'-');const path=`${crypto.randomUUID()}-${safe}`;const {error}=await sb.storage.from('product-image').upload(path,file,{upsert:false,contentType:file.type});if(error){msg('productMessage',error.message);return}imageUrl=sb.storage.from('product-image').getPublicUrl(path).data.publicUrl}const payload={name:$('pName').value.trim(),description:$('pDescription').value.trim()||null,price:Number($('pPrice').value||0),image_url:imageUrl,payment_link:$('pPayment').value.trim()||null,in_stock:$('pStock').value==='true'};const {error}=id?await sb.from('products').update(payload).eq('id',id):await sb.from('products').insert(payload);if(error){msg('productMessage',error.message);return}msg('productMessage','Product saved.',true);clearProduct();loadProducts()};
@@ -213,5 +271,165 @@ async function loadFeedback(){const {data,error}=await sb.from('feedback').selec
 async function loadPromotions(){const {data,error}=await sb.from('promotions').select('*').order('created_at',{ascending:false});if(error){$('promotionList').innerHTML='<div class="empty">'+esc(error.message)+'</div>';return}promotions=data||[];$('promotionList').innerHTML=promotions.length?promotions.map(p=>`<div class="row"><div class="row-main"><div><div class="row-title">${esc(p.code)}</div><div class="row-meta">${esc(p.label||'')} · ${p.type==='percent'?esc(p.value)+'% discount':p.type==='fixed'?money(p.value)+' discount':esc(p.type)}</div></div><span class="status">${p.active?'Active':'Inactive'}</span></div><div class="actions"><button onclick="editPromotion(${p.id})">Edit</button><button onclick="deletePromotion(${p.id})">Delete</button></div></div>`).join(''):'<div class="empty">No promotions yet.</div>'}
 $('promoForm').onsubmit=async e=>{e.preventDefault();const id=$('promoId').value;const payload={code:$('promoCode').value.trim().toUpperCase(),label:$('promoLabel').value.trim(),type:$('promoType').value,value:Number($('promoValue').value||0),active:$('promoActive').value==='true'};const {error}=id?await sb.from('promotions').update(payload).eq('id',id):await sb.from('promotions').insert(payload);if(error){msg('promoMessage',error.message);return}msg('promoMessage','Promotion saved.',true);clearPromotion();loadPromotions()};window.editPromotion=id=>{const p=promotions.find(x=>String(x.id)===String(id));if(!p)return;$('promoId').value=p.id;$('promoCode').value=p.code||'';$('promoLabel').value=p.label||'';$('promoType').value=p.type||'percent';$('promoValue').value=p.value??0;$('promoActive').value=String(p.active!==false);$('promoFormTitle').textContent='Edit promotion'};window.deletePromotion=async id=>{if(!confirm('Delete this promotion?'))return;const {error}=await sb.from('promotions').delete().eq('id',id);if(error)alert(error.message);else loadPromotions()};function clearPromotion(){$('promoId').value='';$('promoForm').reset();$('promoType').value='percent';$('promoValue').value='10';$('promoActive').value='true';$('promoFormTitle').textContent='Add promotion'}$('clearPromotion').onclick=clearPromotion;$('refreshPromotions').onclick=loadPromotions;
 async function loadSettings(){const {data,error}=await sb.from('settings').select('*').order('id',{ascending:true}).limit(1).maybeSingle();if(error){msg('settingsMessage',error.message);return}if(data){$('sWhatsapp').value=data.whatsapp||'';$('sInstagram').value=data.instagram||''}}$('settingsForm').onsubmit=async e=>{e.preventDefault();const payload={whatsapp:$('sWhatsapp').value.trim()||null,instagram:$('sInstagram').value.trim()||null};const {data:existing,error:readError}=await sb.from('settings').select('id').order('id',{ascending:true}).limit(1).maybeSingle();if(readError){msg('settingsMessage',readError.message);return}const result=existing?.id?await sb.from('settings').update(payload).eq('id',existing.id):await sb.from('settings').insert(payload);if(result.error){msg('settingsMessage',result.error.message);return}msg('settingsMessage','Settings saved.',true);loadSettings()};$('refreshSettings').onclick=loadSettings;
+
+let homepageMedia=[];
+
+function mediaAccepts(type,file){
+  if(!file) return false;
+  return type==='video'
+    ? file.type==='video/mp4'
+    : ['image/jpeg','image/png','image/webp'].includes(file.type);
+}
+
+async function loadHomepageMedia(){
+  const {data,error}=await sb.from('settings').select('*').order('id',{ascending:true}).limit(1).maybeSingle();
+  if(error){
+    $('homepageMediaList').innerHTML='<div class="empty">'+esc(error.message)+'</div>';
+    return;
+  }
+
+  const currentUrl=data?.homepage_media_url||null;
+  const currentType=data?.homepage_media_type||null;
+  const active=data?.homepage_media_active!==false;
+
+  if(!currentUrl){
+    $('homepageMediaList').innerHTML='<div class="empty">No homepage media uploaded yet.</div>';
+    return;
+  }
+
+  const mediaHtml=currentType==='video'
+    ? `<video src="${esc(currentUrl)}" controls muted playsinline></video>`
+    : `<img src="${esc(currentUrl)}" alt="Homepage media">`;
+
+  $('homepageMediaList').innerHTML=`
+    <div class="media-current">
+      <span class="status media-badge">${active?'Live on homepage':'Saved but inactive'}</span>
+      <div class="row-meta">Type: ${esc(currentType||'media')}</div>
+      ${mediaHtml}
+      <div class="actions">
+        <button type="button" onclick="disableHomepageMedia()">Disable on homepage</button>
+      </div>
+    </div>`;
+}
+
+$('mediaType').onchange=()=>{
+  const type=$('mediaType').value;
+  $('mediaFile').value='';
+  $('mediaVideoPreview').classList.toggle('hidden',type!=='video');
+  $('mediaImagePreview').classList.toggle('hidden',type!=='image');
+  $('mediaFileNote').textContent=type==='video'
+    ? 'MP4 video recommended for the AVNAUR opening.'
+    : 'JPEG, PNG or WebP image.';
+};
+
+$('mediaFile').onchange=()=>{
+  const file=$('mediaFile').files[0];
+  const type=$('mediaType').value;
+  if(!file)return;
+  if(!mediaAccepts(type,file)){
+    msg('homepageMediaMessage',type==='video'?'Please choose an MP4 video.':'Please choose a JPEG, PNG or WebP image.');
+    $('mediaFile').value='';
+    return;
+  }
+  msg('homepageMediaMessage','',true);
+  const url=URL.createObjectURL(file);
+  if(type==='video'){
+    $('mediaVideoPreview').src=url;
+    $('mediaVideoPreview').classList.remove('hidden');
+    $('mediaImagePreview').classList.add('hidden');
+  }else{
+    $('mediaImagePreview').src=url;
+    $('mediaImagePreview').classList.remove('hidden');
+    $('mediaVideoPreview').classList.add('hidden');
+  }
+};
+
+$('homepageMediaForm').onsubmit=async e=>{
+  e.preventDefault();
+  const type=$('mediaType').value;
+  const file=$('mediaFile').files[0];
+
+  if(!mediaAccepts(type,file)){
+    msg('homepageMediaMessage',type==='video'?'Please choose an MP4 video.':'Please choose a JPEG, PNG or WebP image.');
+    return;
+  }
+
+  msg('homepageMediaMessage','Uploading…',true);
+
+  const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'-');
+  const path=`homepage/${crypto.randomUUID()}-${safe}`;
+
+  const {error:uploadError}=await sb.storage.from('product-image').upload(path,file,{
+    upsert:false,
+    contentType:file.type
+  });
+
+  if(uploadError){
+    msg('homepageMediaMessage',uploadError.message);
+    return;
+  }
+
+  const publicUrl=sb.storage.from('product-image').getPublicUrl(path).data.publicUrl;
+
+  const {data:existing,error:readError}=await sb.from('settings')
+    .select('id')
+    .order('id',{ascending:true})
+    .limit(1)
+    .maybeSingle();
+
+  if(readError){
+    msg('homepageMediaMessage',readError.message);
+    return;
+  }
+
+  const payload={
+    homepage_media_url:publicUrl,
+    homepage_media_type:type,
+    homepage_media_active:$('mediaActive').value==='true'
+  };
+
+  const result=existing?.id
+    ? await sb.from('settings').update(payload).eq('id',existing.id)
+    : await sb.from('settings').insert(payload);
+
+  if(result.error){
+    msg('homepageMediaMessage',result.error.message);
+    return;
+  }
+
+  msg('homepageMediaMessage','Homepage media saved.',true);
+  $('mediaFile').value='';
+  loadHomepageMedia();
+};
+
+window.disableHomepageMedia=async()=>{
+  const {data:existing,error}=await sb.from('settings')
+    .select('id')
+    .order('id',{ascending:true})
+    .limit(1)
+    .maybeSingle();
+
+  if(error){alert(error.message);return;}
+  if(!existing?.id){return;}
+
+  const {error:updateError}=await sb.from('settings')
+    .update({homepage_media_active:false})
+    .eq('id',existing.id);
+
+  if(updateError) alert(updateError.message);
+  else loadHomepageMedia();
+};
+
+$('clearHomepageMedia').onclick=()=>{
+  $('mediaFile').value='';
+  $('mediaVideoPreview').src='';
+  $('mediaImagePreview').src='';
+  $('mediaVideoPreview').classList.add('hidden');
+  $('mediaImagePreview').classList.add('hidden');
+  $('homepageMediaMessage').textContent='';
+};
+
+$('refreshHomepageMedia').onclick=loadHomepageMedia;
+
 init();
 </script></body></html>
