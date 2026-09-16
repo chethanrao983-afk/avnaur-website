@@ -120,19 +120,10 @@ footer{text-align:center;padding:35px 8%;border-top:1px solid var(--line);font-s
   max-height:520px;
   object-fit:cover;
 }
-@media (min-width:900px){
-  .hero{
-    display:grid;
-    grid-template-columns:minmax(0,1fr) minmax(320px,520px);
-    align-items:center;
-    gap:clamp(40px,7vw,100px);
-    text-align:left;
-  }
-  .hero-media{margin:0;}
-}
-@media (max-width:899px){
-  .hero-media{margin-top:34px;}
-}
+/* Keep the original hero flow on every screen: text first, media underneath. */
+.hero-media{margin-top:34px;}
+.hero-media img[hidden]{display:none!important;}
+.hero-media video[hidden]{display:none!important;}
 </style>
 </style>
 <style id="avnaur-premium-visual">
