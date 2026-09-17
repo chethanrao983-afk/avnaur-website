@@ -591,77 +591,81 @@ document.getElementById('checkoutForm')?.addEventListener('submit',async e=>{
   const email=document.getElementById('customerEmail').value.trim();
   const address=document.getElementById('customerAddress').value.trim();
   const location=document.getElementById('locationData').value||null;
-  const promo=window.AVNAUR_CHECKOUT_PROMOTION||{discount:0,total:getCartSubtotal()};
-  const amount=Math.max(0,Math.round(promo.total||getCartSubtotal()));
-  const referenceId='AVNAUR-'+Date.now()+'-'+Math.random().toString(36).slice(2,8).toUpperCase();
+  const promo=window.AVNAUR_CHECKOUT_PROMOTION||{code:null};
 
-  const payload={
-    user_id:user.id,
-    customer_name:name,
-    phone,
-    customer_address:address,
-    amount,
-    status:'pending',
-    email:email||user.email||null,
-    items:cart.map(i=>({id:i.id,name:i.name,price:i.price,qty:i.qty,image:i.image||null})),
-    promo_code:promo.code||null,
-    discount:Number(promo.discount||0),
-    customer_location:location,
-    razorpay_reference_id:referenceId,
-    payment_status:'pending'
-  };
+  if(!name||!phone||!address){
+    alert('Please enter your name, phone number and delivery address.');
+    return;
+  }
+
+  /*
+    SECURITY:
+    The browser sends ONLY product IDs, quantities and customer details.
+    It does NOT send price, amount, discount or payment-link data.
+    The Edge Function reads the live product prices from Supabase,
+    calculates the real total and creates the Razorpay payment link.
+  */
+  const items=cart.map(i=>({
+    id:String(i.id),
+    qty:Math.max(1,Math.min(99,Number(i.qty||1)))
+  }));
 
   const button=e.target.querySelector('button[type="submit"]');
   if(button){button.disabled=true;button.textContent='Creating secure payment…';}
 
   try{
-    const {error:orderError}=await AVNAUR_SB.from('orders').insert(payload);
-    if(orderError){
-      console.error('Order insert failed:',orderError);
-      if(button){button.disabled=false;button.textContent='Proceed to Payment';}
-      alert('Could not save your order yet. '+(orderError.message||'Please try again.'));
-      return;
-    }
-
-    // Fetch the newly-created order ID using the signed-in customer's RLS access.
-    // Passing the order ID to the Edge Function is more reliable than relying only
-    // on reference lookup, while the reference ID remains attached for matching.
-    const {data:createdOrder,error:lookupError}=await AVNAUR_SB.from('orders')
-      .select('id,razorpay_reference_id')
-      .eq('user_id',user.id)
-      .eq('razorpay_reference_id',referenceId)
-      .single();
-
-    if(lookupError||!createdOrder?.id){
-      console.error('New order lookup failed:',lookupError);
-      if(button){button.disabled=false;button.textContent='Proceed to Payment';}
-      alert('Your order was saved, but its payment setup could not be completed. Please try again.');
-      return;
-    }
-
     const {data:paymentData,error:paymentError}=await AVNAUR_SB.functions.invoke('create-payment-link',{
-      body:{order_id:createdOrder.id,reference_id:referenceId}
+      body:{
+        items,
+        customer_name:name,
+        phone,
+        email:email||user.email||null,
+        customer_address:address,
+        customer_location:location,
+        promo_code:promo.code||null
+      }
     });
 
     if(paymentError||!paymentData?.short_url){
-      console.error('Payment link creation failed:',paymentError||paymentData);
+      console.error('Secure payment setup failed:',paymentError||paymentData);
       if(button){button.disabled=false;button.textContent='Proceed to Payment';}
       const detail=paymentError?.message||paymentData?.error||'Please try again.';
-      alert('Your order was saved, but payment could not be started. '+detail);
+      alert('Payment could not be started. '+detail);
       return;
     }
 
+    /*
+      Everything below is informational/local UI state only.
+      The authoritative order amount is the amount calculated by the server.
+    */
     localStorage.setItem('avnaurPendingOrder',JSON.stringify({
-      ...payload,
-      order_id:createdOrder.id,
+      user_id:user.id,
+      order_id:paymentData.order_id||null,
+      customer_name:name,
+      phone,
+      email:email||user.email||null,
+      customer_address:address,
+      customer_location:location,
+      amount:Number(paymentData.amount||0),
+      status:'pending',
+      payment_status:'pending',
+      promo_code:promo.code||null,
+      discount:Number(paymentData.discount||0),
+      items:cart.map(i=>({
+        id:i.id,
+        name:i.name,
+        price:i.price,
+        qty:i.qty,
+        image:i.image||null
+      })),
       payment_link_id:paymentData.payment_link_id||null,
       payment_url:paymentData.short_url,
-      items:cart
+      razorpay_reference_id:paymentData.reference_id||null
     }));
 
     window.location.href=paymentData.short_url;
   }catch(err){
-    console.error('Checkout error:',err);
+    console.error('Secure checkout error:',err);
     if(button){button.disabled=false;button.textContent='Proceed to Payment';}
     alert('Something went wrong while starting your payment. Please try again.');
   }
