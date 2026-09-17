@@ -173,6 +173,9 @@ footer{text-align:center;padding:35px 8%;border-top:1px solid var(--line);font-s
 /* Homepage media is optional: when disabled, the original hero is restored. */
 .hero{grid-template-columns:1fr!important;}
 .hero-media.is-disabled{display:none!important;}
+
+.product-title-link{color:inherit;text-decoration:none;}
+.product-title-link:hover{text-decoration:underline;text-underline-offset:4px;}
 </style>
 </style>
 <style id="avnaur-premium-visual">
@@ -506,7 +509,7 @@ function renderProductGrid(products){
     const scentMarkup = scentName
       ? `<span class="product-scent">${esc(scentName)}</span>`
       : '';
-    return `<article class="product-card"><div class="product-image">${image}</div><div class="product-copy"><div class="eyebrow">No. ${String(i+1).padStart(2,'0')}</div><div class="product-title-row"><div class="product-title-info"><h3>${displayName}</h3>${scentMarkup}</div><strong class="product-price">${money(p.price)}</strong></div><p class="product-description collapsed">${description}</p><div class="read-more-slot"><button class="read-more-btn" type="button" aria-expanded="false" hidden>Read more</button></div>${action}</div></article>`;
+    return `<article class="product-card"><div class="product-image">${image}</div><div class="product-copy"><div class="eyebrow">No. ${String(i+1).padStart(2,'0')}</div><div class="product-title-row"><div class="product-title-info"><h3><a class="product-title-link" href="/product.html?id=${encodeURIComponent(id)}">${displayName}</a></h3>${scentMarkup}</div><strong class="product-price">${money(p.price)}</strong></div><p class="product-description collapsed">${description}</p><div class="read-more-slot"><button class="read-more-btn" type="button" aria-expanded="false" hidden>Read more</button></div>${action}</div></article>`;
   }).join('');
   grid.querySelectorAll('.add-cart').forEach(b=>b.onclick=()=>addToCart(b.dataset.id));
   grid.querySelectorAll('.buy-now').forEach(b=>b.onclick=()=>{cart=[];addToCart(b.dataset.id);});
