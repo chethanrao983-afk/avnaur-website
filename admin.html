@@ -16,9 +16,11 @@
 </style></head><body><header class="top"><div class="brand">AVNAUR</div><div class="admin-tag">Control room</div></header>
 <section id="loginView" class="login"><div class="login-card"><div class="eyebrow">Private area</div><h1>Welcome back, Mr. Rao</h1><p style="color:var(--muted);line-height:1.7">Sign in to manage AVNAUR.</p><form id="loginForm"><div class="field"><label>Email</label><input id="loginEmail" type="email" required autocomplete="username"></div><div class="field"><label>Password</label><input id="loginPassword" type="password" required autocomplete="current-password"></div><button class="btn" type="submit">Sign in</button><div id="loginMessage" class="message"></div></form></div></section>
 <main id="app" class="wrap hidden"><div class="toolbar"><div><div class="eyebrow">AVNAUR control room</div><h1 style="font-family:'Playfair Display',serif;font-size:48px;font-weight:500;margin:8px 0">Welcome back, Mr. Rao</h1><p style="color:var(--muted);margin:0">Here's what's happening with AVNAUR today.</p></div><button class="btn secondary" id="logoutBtn">Log out</button></div>
+<div class="note" style="margin:0 0 18px;padding:12px 14px;border:1px solid var(--line);background:var(--paper);">Products are now separated by type: <strong>Candles</strong> and <strong>Chocolates</strong>. Make sure the Supabase <code>products.product_type</code> column has been added.</div>
 <div class="stats"><div class="stat"><div class="eyebrow">Products</div><b id="statProducts">0</b></div><div class="stat"><div class="eyebrow">Orders</div><b id="statOrders">0</b></div><div class="stat"><div class="eyebrow">Paid orders</div><b id="statPaid">0</b></div><div class="stat"><div class="eyebrow">Revenue</div><b id="statRevenue">₹0</b></div><div class="stat"><div class="eyebrow">Feedback</div><b id="statFeedback">0</b></div></div>
-<nav class="nav"><button class="active" data-tab="products">Products</button><button data-tab="orders">Orders</button><button data-tab="feedback">Feedback</button><button data-tab="promotions">Promotions</button><button data-tab="settings">Settings</button><button data-tab="homepage-media">Homepage Media</button></nav>
-<section id="tab-products"><div class="grid"><div class="card"><h2 id="productFormTitle">Add product</h2><form id="productForm"><input type="hidden" id="productId"><div class="field"><label>Name</label><input id="pName" required></div><div class="field"><label>Fragrance / Scent</label><input id="pFragrance" placeholder="e.g. Sandalwood"></div><div class="field"><label>Description</label><textarea id="pDescription"></textarea></div><div class="field"><label>Price (₹)</label><input id="pPrice" type="number" min="0" step="1" required></div><div class="field"><label>Product image</label><input id="pImageFile" type="file" accept="image/*"><img id="pPreview" class="preview hidden" alt="Product preview"><input id="pImage" type="hidden"></div><div class="field"><label>Razorpay payment link</label><input id="pPayment" type="url" placeholder="https://rzp.io/..."><div class="row-meta">Leave blank until your Razorpay payment link is ready.</div></div><div class="field"><label>Stock</label><select id="pStock"><option value="true">In stock</option><option value="false">Out of stock</option></select></div><div class="actions"><button class="btn" type="submit">Save product</button><button class="btn secondary" type="button" id="cancelProduct">Clear</button></div><div id="productMessage" class="message"></div></form></div><div class="card"><div class="toolbar"><h2>Products</h2><button class="btn secondary" id="refreshProducts">Refresh</button></div><div id="productList" class="list"></div></div></div></section>
+<nav class="nav"><button class="active" data-tab="candles">Candles</button><button data-tab="chocolates">Chocolates</button><button data-tab="orders">Orders</button><button data-tab="feedback">Feedback</button><button data-tab="promotions">Promotions</button><button data-tab="settings">Settings</button><button data-tab="homepage-media">Homepage Media</button></nav>
+<section id="tab-candles"><div class="grid"><div class="card"><div class="eyebrow">Product type · Candle</div><h2 id="candleFormTitle">Add candle</h2><form id="candleForm"><input type="hidden" id="candleId"><div class="field"><label>Name</label><input id="candleName" required></div><div class="field"><label>Fragrance / Scent</label><input id="candleFragrance" placeholder="e.g. Sandalwood"></div><div class="field"><label>Description</label><textarea id="candleDescription"></textarea></div><div class="field"><label>Price (₹)</label><input id="candlePrice" type="number" min="0" step="1" required><div class="row-meta">Authoritative store price used by secure checkout.</div></div><div class="field"><label>Product image</label><input id="candleImageFile" type="file" accept="image/*"><img id="candlePreview" class="preview hidden" alt="Candle preview"><input id="candleImage" type="hidden"></div><div class="field"><label>Secure payment</label><div class="row-meta" style="padding:12px;border:1px solid var(--line);background:var(--cream);line-height:1.7">Secure checkout creates the Razorpay payment flow from the live product price.</div></div><div class="field"><label>Stock</label><select id="candleStock"><option value="true">In stock</option><option value="false">Out of stock</option></select></div><div class="actions"><button class="btn" type="submit">Save candle</button><button class="btn secondary" type="button" id="clearCandle">Clear</button></div><div id="candleMessage" class="message"></div></form></div><div class="card"><div class="toolbar"><div><div class="eyebrow">Only candle products</div><h2>Candles</h2></div><button class="btn secondary" id="refreshCandles">Refresh</button></div><div id="candleList" class="list"></div></div></div></section>
+<section id="tab-chocolates" class="hidden"><div class="grid"><div class="card"><div class="eyebrow">Product type · Chocolate</div><h2 id="chocolateFormTitle">Add chocolate</h2><form id="chocolateForm"><input type="hidden" id="chocolateId"><div class="field"><label>Name</label><input id="chocolateName" required placeholder="e.g. Premium Almond Chocolate"></div><div class="field"><label>Description</label><textarea id="chocolateDescription" placeholder="Describe the chocolate, ingredients or finish"></textarea></div><div class="field"><label>Price (₹)</label><input id="chocolatePrice" type="number" min="0" step="1" required><div class="row-meta">Authoritative store price used by secure checkout.</div></div><div class="field"><label>Product image</label><input id="chocolateImageFile" type="file" accept="image/*"><img id="chocolatePreview" class="preview hidden" alt="Chocolate preview"><input id="chocolateImage" type="hidden"></div><div class="field"><label>Secure payment</label><div class="row-meta" style="padding:12px;border:1px solid var(--line);background:var(--cream);line-height:1.7">Secure checkout creates the Razorpay payment flow from the live product price.</div></div><div class="field"><label>Stock</label><select id="chocolateStock"><option value="true">In stock</option><option value="false">Out of stock</option></select></div><div class="actions"><button class="btn" type="submit">Save chocolate</button><button class="btn secondary" type="button" id="clearChocolate">Clear</button></div><div id="chocolateMessage" class="message"></div></form></div><div class="card"><div class="toolbar"><div><div class="eyebrow">Only chocolate products</div><h2>Chocolates</h2></div><button class="btn secondary" id="refreshChocolates">Refresh</button></div><div id="chocolateList" class="list"></div></div></div></section>
 <section id="tab-orders" class="hidden"><div class="card">
 <div class="toolbar"><h2>Orders</h2><button class="btn secondary" id="refreshOrders">Refresh</button></div>
 <div class="note">Payment status is verified by the Razorpay webhook. Order status controls fulfilment. Customer location is shown only when the customer chose <strong>Use Live Location</strong>.</div>
@@ -99,55 +101,95 @@ function msg(id,text,ok=false){$(id).textContent=text;$(id).className=ok?'messag
 async function init(){const {data:{session}}=await sb.auth.getSession();session?showApp():showLogin();}
 function showLogin(){$('loginView').classList.remove('hidden');$('app').classList.add('hidden')}function showApp(){$('loginView').classList.add('hidden');$('app').classList.remove('hidden');loadAll()}
 $('loginForm').onsubmit=async e=>{e.preventDefault();msg('loginMessage','Signing in…',true);const {error}=await sb.auth.signInWithPassword({email:$('loginEmail').value.trim(),password:$('loginPassword').value});if(error){msg('loginMessage',error.message);return}showApp()};$('logoutBtn').onclick=async()=>{await sb.auth.signOut();showLogin()};
-document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');['products','orders','feedback','promotions','settings','homepage-media'].forEach(t=>$('tab-'+t).classList.toggle('hidden',t!==b.dataset.tab));});
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');['candles','chocolates','orders','feedback','promotions','settings','homepage-media'].forEach(t=>$('tab-'+t).classList.toggle('hidden',t!==b.dataset.tab));});
 async function loadAll(){await Promise.all([loadProducts(),loadOrders(),loadFeedback(),loadPromotions(),loadSettings()])}
-async function loadProducts(){const {data,error}=await sb.from('products').select('*').order('created_at',{ascending:false});if(error){$('productList').innerHTML='<div class="empty">'+esc(error.message)+'</div>';return}products=data||[];$('statProducts').textContent=products.length;$('productList').innerHTML=products.length?products.map(p=>`<div class="row"><div class="row-main"><div><div class="row-title">${esc(p.name||'Unnamed product')}</div><div class="row-meta">${p.fragrance_name?esc(p.fragrance_name)+' · ':''}${money(p.price)} · ${p.in_stock===false?'Out of stock':'In stock'}</div></div><span class="status">${p.in_stock===false?'Hidden':'Live'}</span></div><div class="row-meta">${esc(p.description||'No description')}</div>${p.image_url?`<img class="preview" src="${esc(p.image_url)}" alt="">`:''}<div class="actions"><button onclick="editProduct(${p.id})">Edit</button><button onclick="deleteProduct(${p.id})">Delete</button></div></div>`).join(''):'<div class="empty">No products yet.</div>'}
-$('productForm').onsubmit=async e=>{e.preventDefault();const id=$('productId').value;const file=$('pImageFile').files[0];let imageUrl=$('pImage').value.trim()||null;if(file){if(!file.type.startsWith('image/')){msg('productMessage','Please choose an image file.');return}const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'-');const path=`${crypto.randomUUID()}-${safe}`;const {error}=await sb.storage.from('product-image').upload(path,file,{upsert:false,contentType:file.type});if(error){msg('productMessage',error.message);return}imageUrl=sb.storage.from('product-image').getPublicUrl(path).data.publicUrl}const payload={name:$('pName').value.trim(),fragrance_name:$('pFragrance').value.trim()||null,description:$('pDescription').value.trim()||null,price:Number($('pPrice').value||0),image_url:imageUrl,payment_link:$('pPayment').value.trim()||null,in_stock:$('pStock').value==='true'};const {error}=id?await sb.from('products').update(payload).eq('id',id):await sb.from('products').insert(payload);if(error){msg('productMessage',error.message);return}msg('productMessage','Product saved.',true);clearProduct();loadProducts()};
-window.editProduct=id=>{const p=products.find(x=>String(x.id)===String(id));if(!p)return;$('productId').value=p.id;$('pName').value=p.name||'';$('pFragrance').value=p.fragrance_name||'';$('pDescription').value=p.description||'';$('pPrice').value=p.price??0;$('pImage').value=p.image_url||'';$('pImageFile').value='';$('pPreview').src=p.image_url||'';$('pPreview').classList.toggle('hidden',!p.image_url);$('pPayment').value=p.payment_link||'';$('pStock').value=String(p.in_stock!==false);$('productFormTitle').textContent='Edit product';window.scrollTo({top:0,behavior:'smooth'})};window.deleteProduct=async id=>{if(!confirm('Delete this product?'))return;const {error}=await sb.from('products').delete().eq('id',id);if(error)alert(error.message);else loadProducts()};
-$('pImageFile').onchange=()=>{const f=$('pImageFile').files[0];if(f){$('pPreview').src=URL.createObjectURL(f);$('pPreview').classList.remove('hidden')}};function clearProduct(){$('productId').value='';$('productForm').reset();$('pFragrance').value='';$('pImage').value='';$('pImageFile').value='';$('pPreview').src='';$('pPreview').classList.add('hidden');$('pStock').value='true';$('productFormTitle').textContent='Add product'}$('cancelProduct').onclick=clearProduct;$('refreshProducts').onclick=loadProducts;
-function orderMatchesFilter(o){
-  const filter=$('orderFilter').value;
-  const paymentStatus=String(o.payment_status||o.status||'pending').toLowerCase();
-  const orderStatus=String(o.status||'pending').toLowerCase();
-  if(filter==='paid') return paymentStatus==='paid';
-  if(filter==='pending') return paymentStatus==='pending';
-  if(['processing','shipped','delivered','cancelled'].includes(filter)) return orderStatus===filter;
-  return true;
+async function loadProducts(){
+  const {data,error}=await sb.from('products').select('*').order('created_at',{ascending:false});
+  if(error){$('candleList').innerHTML='<div class="empty">'+esc(error.message)+'</div>';$('chocolateList').innerHTML='<div class="empty">'+esc(error.message)+'</div>';return}
+  products=data||[];
+  $('statProducts').textContent=products.length;
+  renderProductLists();
 }
 
-function orderMatchesSearch(o){
-  const q=$('orderSearch').value.trim().toLowerCase();
-  if(!q)return true;
-  return [
-    o.id,
-    o.customer_name,
-    o.phone,
-    o.email,
-    o.razorpay_payment_id,
-    o.razorpay_reference_id,
-    o.razorpay_payment_link_id
-  ].some(v=>String(v??'').toLowerCase().includes(q));
+function renderProductCard(p,type){
+  const label=type==='chocolate'?'Chocolate':'Candle';
+  return `<div class="row"><div class="row-main"><div><div class="row-title">${esc(p.name||'Unnamed product')}</div><div class="row-meta">${type==='candle'&&p.fragrance_name?esc(p.fragrance_name)+' · ':''}${money(p.price)} · ${p.in_stock===false?'Out of stock':'In stock'}</div></div><span class="status">${p.in_stock===false?'Hidden':'Live'}</span></div><div class="row-meta"><span class="pill">${label}</span> ${esc(p.description||'No description')}</div>${p.image_url?`<img class="preview" src="${esc(p.image_url)}" alt="">`:''}<div class="actions"><button onclick="editProduct(${p.id},'${type}')">Edit</button><button onclick="deleteProduct(${p.id})">Delete</button></div></div>`;
 }
 
-function locationMarkup(o){
-  if(!o.customer_location)return '';
-  let locText=String(o.customer_location);
-  let mapUrl='';
-  try{
-    const loc=typeof o.customer_location==='string'
-      ? JSON.parse(o.customer_location)
-      : o.customer_location;
-    if(loc && Number.isFinite(Number(loc.lat)) && Number.isFinite(Number(loc.lng))){
-      const lat=Number(loc.lat);
-      const lng=Number(loc.lng);
-      const accuracy=loc.accuracy?` · accuracy ±${esc(loc.accuracy)}m`:'';
-      locText=`${lat}, ${lng}${accuracy}`;
-      mapUrl=`https://www.google.com/maps?q=${encodeURIComponent(lat+','+lng)}`;
-    }
-  }catch(e){}
-  return `<div class="location-box"><strong>Customer live location:</strong> ${esc(locText)}${mapUrl?`<br><a class="location-link" href="${mapUrl}" target="_blank" rel="noopener">Open location in Google Maps</a>`:''}</div>`;
+function renderProductLists(){
+  const candles=products.filter(p=>String(p.product_type||'candle').toLowerCase()==='candle');
+  const chocolates=products.filter(p=>String(p.product_type||'candle').toLowerCase()==='chocolate');
+  $('candleList').innerHTML=candles.length?candles.map(p=>renderProductCard(p,'candle')).join(''):'<div class="empty">No candle products yet.</div>';
+  $('chocolateList').innerHTML=chocolates.length?chocolates.map(p=>renderProductCard(p,'chocolate')).join(''):'<div class="empty">No chocolate products yet.</div>';
 }
 
+async function uploadImageIfNeeded(file,currentUrl,messageId,pathFolder){
+  let imageUrl=currentUrl||null;
+  if(file){
+    if(!file.type.startsWith('image/')){msg(messageId,'Please choose an image file.');return null}
+    const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'-');
+    const path=`${pathFolder}/${crypto.randomUUID()}-${safe}`;
+    const {error}=await sb.storage.from('product-image').upload(path,file,{upsert:false,contentType:file.type});
+    if(error){msg(messageId,error.message);return null}
+    imageUrl=sb.storage.from('product-image').getPublicUrl(path).data.publicUrl;
+  }
+  return imageUrl;
+}
+
+async function saveProduct(kind){
+  const isChocolate=kind==='chocolate';
+  const prefix=isChocolate?'chocolate':'candle';
+  const id=$(prefix+'Id').value;
+  const file=$(prefix+'ImageFile').files[0];
+  const imageUrl=await uploadImageIfNeeded(file,$(prefix+'Image').value.trim()||null,prefix+'Message',kind);
+  if(file && !imageUrl)return;
+  const productName=$(prefix+'Name').value.trim();
+  const productPrice=Number($(prefix+'Price').value);
+  if(!productName){msg(prefix+'Message','Product name is required.');return}
+  if(!Number.isFinite(productPrice)||productPrice<0){msg(prefix+'Message','Please enter a valid product price.');return}
+  const payload=isChocolate
+    ? {name:productName,fragrance_name:null,description:$(prefix+'Description').value.trim()||null,price:productPrice,image_url:imageUrl,in_stock:$(prefix+'Stock').value==='true',product_type:'chocolate'}
+    : {name:productName,fragrance_name:$(prefix+'Fragrance').value.trim()||null,description:$(prefix+'Description').value.trim()||null,price:productPrice,image_url:imageUrl,in_stock:$(prefix+'Stock').value==='true',product_type:'candle'};
+  const {error}=id?await sb.from('products').update(payload).eq('id',id):await sb.from('products').insert(payload);
+  if(error){msg(prefix+'Message',error.message);return}
+  msg(prefix+'Message',`${isChocolate?'Chocolate':'Candle'} saved.`,true);
+  if(isChocolate)clearChocolate(); else clearCandle();
+  loadProducts();
+}
+
+$('candleForm').onsubmit=async e=>{e.preventDefault();await saveProduct('candle')};
+$('chocolateForm').onsubmit=async e=>{e.preventDefault();await saveProduct('chocolate')};
+
+window.editProduct=id=>{};
+window.editProduct=(id,type)=>{
+  const p=products.find(x=>String(x.id)===String(id));if(!p)return;
+  const isChocolate=type==='chocolate';
+  const prefix=isChocolate?'chocolate':'candle';
+  const tab=isChocolate?'chocolates':'candles';
+  document.querySelector(`.nav button[data-tab="${tab}"]`).click();
+  $(prefix+'Id').value=p.id;
+  $(prefix+'Name').value=p.name||'';
+  if(!isChocolate)$(prefix+'Fragrance').value=p.fragrance_name||'';
+  $(prefix+'Description').value=p.description||'';
+  $(prefix+'Price').value=p.price??0;
+  $(prefix+'Image').value=p.image_url||'';
+  $(prefix+'ImageFile').value='';
+  $(prefix+'Preview').src=p.image_url||'';
+  $(prefix+'Preview').classList.toggle('hidden',!p.image_url);
+  $(prefix+'Stock').value=String(p.in_stock!==false);
+  $(prefix+'FormTitle').textContent=isChocolate?'Edit chocolate':'Edit candle';
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+window.deleteProduct=async id=>{if(!confirm('Delete this product?'))return;const {error}=await sb.from('products').delete().eq('id',id);if(error)alert(error.message);else loadProducts()};
+
+$('candleImageFile').onchange=()=>{const f=$('candleImageFile').files[0];if(f){$('candlePreview').src=URL.createObjectURL(f);$('candlePreview').classList.remove('hidden')}};
+$('chocolateImageFile').onchange=()=>{const f=$('chocolateImageFile').files[0];if(f){$('chocolatePreview').src=URL.createObjectURL(f);$('chocolatePreview').classList.remove('hidden')}};
+function clearCandle(){$('candleId').value='';$('candleForm').reset();$('candleFragrance').value='';$('candleImage').value='';$('candleImageFile').value='';$('candlePreview').src='';$('candlePreview').classList.add('hidden');$('candleStock').value='true';$('candleFormTitle').textContent='Add candle'}
+function clearChocolate(){$('chocolateId').value='';$('chocolateForm').reset();$('chocolateImage').value='';$('chocolateImageFile').value='';$('chocolatePreview').src='';$('chocolatePreview').classList.add('hidden');$('chocolateStock').value='true';$('chocolateFormTitle').textContent='Add chocolate'}
+$('clearCandle').onclick=clearCandle;
+$('clearChocolate').onclick=clearChocolate;
+$('refreshCandles').onclick=loadProducts;
+$('refreshChocolates').onclick=loadProducts;
 async function loadOrders(){
   const {data,error}=await sb.from('orders').select('*').order('created_at',{ascending:false});
   if(error){
