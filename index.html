@@ -1105,10 +1105,8 @@ nav .links a{color:#fff!important;}
 #contact .eyebrow::before,#contact .eyebrow::after{background:rgba(216,181,139,.55)!important;}
 #contact h2{color:#332a24!important;}
 #contact p{color:#332a24!important;}
-#contact .btn{background:#332a24!important;color:#f4eadf!important;border:1px solid #d8b58b!important;}
-#contact .btn:hover{background:#d8b58b!important;color:#332a24!important;}
-#contact .social-btn{background:#332a24!important;color:#f4eadf!important;border:1px solid rgba(216,181,139,.75)!important;}
-#contact .social-btn:hover{background:#d8b58b!important;color:#332a24!important;border-color:#d8b58b!important;}
+#contact .btn,#contact .social-btn{background:#fff!important;color:#332a24!important;border:1px solid #fff!important;}
+#contact .btn:hover,#contact .social-btn:hover{background:#332a24!important;color:#fff!important;border-color:#332a24!important;}
 </style>
 
 
@@ -1145,6 +1143,10 @@ nav .links a{color:#fff!important;}
   #contact .btn,
   #contact .social-btn{width:100%!important;min-width:0!important;max-width:180px!important;}
 }
+</style>
+<style id="avnaur-contact-social-white">
+#contact .social-btn{background:#fff!important;color:#332a24!important;border:1px solid #fff!important;}
+#contact .social-btn:hover{background:#332a24!important;color:#fff!important;border-color:#332a24!important;}
 </style>
 </head><body><!-- Official AVNAUR logo mark embedded from user-provided brand artwork --><nav><a href="#" class="brand" aria-label="AVNAUR home"><img class="brand-new-logo" src="data:image/png;base64,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" alt="AVNAUR"></a><div class="links"><a href="#about">Our Story</a><a href="#collection">Collection</a><a href="#reviews">Reviews</a><a href="#contact">Contact</a></div><div class="account-bar"><button class="account-trigger" id="accountTrigger" type="button">Login</button><button class="cart-trigger" id="cartTrigger" type="button" aria-label="Open shopping cart">Cart <span class="cart-count" id="cartCount">0</span></button></div></nav>
 <!-- AVNAUR Customer Account -->
@@ -1216,7 +1218,7 @@ nav .links a{color:#fff!important;}
 <section id="black-media-feature" aria-label="AVNAUR chocolate video">
   <div class="black-media-inner">
     <div class="black-media-item black-media-video">
-      <video autoplay muted playsinline loop preload="metadata" aria-label="AVNAUR chocolate visual">
+      <video id="chocolateVideo" autoplay muted playsinline loop preload="auto" aria-label="AVNAUR chocolate visual">
         <source src="avnaur-intro.mp4" type="video/mp4">
       </video>
       <div class="chocolate-video-overlay">
@@ -1297,10 +1299,34 @@ function syncSocialLinks(){
 }
 
 async function loadSettings(){
-  const {data,error}=await AVNAUR_SB.from('settings').select('whatsapp,instagram,homepage_media_url,homepage_media_type,homepage_media_active').order('id',{ascending:true}).limit(1).maybeSingle();
+  const {data,error}=await AVNAUR_SB.from('settings').select('*').order('id',{ascending:true}).limit(1).maybeSingle();
   if(!error&&data) AVNAUR_SETTINGS={...AVNAUR_SETTINGS,...data};
   syncSocialLinks();
   applyHomepageMedia();
+  applyChocolateVideo();
+}
+
+function applyChocolateVideo(){
+  const video=document.getElementById('chocolateVideo');
+  if(!video) return;
+  const source=video.querySelector('source');
+  if(!source) return;
+
+  const url=String(AVNAUR_SETTINGS.chocolate_video_url || '').trim();
+  const active=AVNAUR_SETTINGS.chocolate_video_active !== false;
+  const nextUrl=(active && url) ? url : 'avnaur-intro.mp4';
+
+  if(source.getAttribute('src') !== nextUrl){
+    source.setAttribute('src',nextUrl);
+    video.load();
+  }
+
+  video.muted=true;
+  video.setAttribute('muted','');
+  video.setAttribute('playsinline','');
+  video.setAttribute('autoplay','');
+  video.setAttribute('loop','');
+  video.play().catch(()=>{});
 }
 
 function applyHomepageMedia(){
@@ -1337,6 +1363,10 @@ function applyHomepageMedia(){
     video.play().catch(()=>{});
   }
 }
+
+document.addEventListener('DOMContentLoaded',()=>{
+  applyChocolateVideo();
+});
 
 async function loadPromotions(){
   const {data,error}=await AVNAUR_SB.from('promotions').select('code,label,type,value,active').eq('active',true);
