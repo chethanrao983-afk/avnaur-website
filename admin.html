@@ -18,7 +18,7 @@
 <main id="app" class="wrap hidden"><div class="toolbar"><div><div class="eyebrow">AVNAUR control room</div><h1 style="font-family:'Playfair Display',serif;font-size:48px;font-weight:500;margin:8px 0">Welcome back, Mr. Rao</h1><p style="color:var(--muted);margin:0">Here's what's happening with AVNAUR today.</p></div><button class="btn secondary" id="logoutBtn">Log out</button></div>
 <div class="note" style="margin:0 0 18px;padding:12px 14px;border:1px solid var(--line);background:var(--paper);">Products are now separated by type: <strong>Candles</strong> and <strong>Chocolates</strong>. Make sure the Supabase <code>products.product_type</code> column has been added.</div>
 <div class="stats"><div class="stat"><div class="eyebrow">Products</div><b id="statProducts">0</b></div><div class="stat"><div class="eyebrow">Orders</div><b id="statOrders">0</b></div><div class="stat"><div class="eyebrow">Paid orders</div><b id="statPaid">0</b></div><div class="stat"><div class="eyebrow">Revenue</div><b id="statRevenue">₹0</b></div><div class="stat"><div class="eyebrow">Feedback</div><b id="statFeedback">0</b></div></div>
-<nav class="nav"><button class="active" data-tab="candles">Candles</button><button data-tab="chocolates">Chocolates</button><button data-tab="orders">Orders</button><button data-tab="feedback">Feedback</button><button data-tab="promotions">Promotions</button><button data-tab="settings">Settings</button><button data-tab="homepage-media">Homepage Media</button></nav>
+<nav class="nav"><button class="active" data-tab="candles">Candles</button><button data-tab="chocolates">Chocolates</button><button data-tab="orders">Orders</button><button data-tab="feedback">Feedback</button><button data-tab="promotions">Promotions</button><button data-tab="settings">Settings</button><button data-tab="homepage-media">Homepage Media</button><button data-tab="chocolate-video">Chocolate Video</button></nav>
 <section id="tab-candles"><div class="grid"><div class="card"><div class="eyebrow">Product type · Candle</div><h2 id="candleFormTitle">Add candle</h2><form id="candleForm"><input type="hidden" id="candleId"><div class="field"><label>Name</label><input id="candleName" required></div><div class="field"><label>Fragrance / Scent</label><input id="candleFragrance" placeholder="e.g. Sandalwood"></div><div class="field"><label>Description</label><textarea id="candleDescription"></textarea></div><div class="field"><label>Price (₹)</label><input id="candlePrice" type="number" min="0" step="1" required><div class="row-meta">Authoritative store price used by secure checkout.</div></div><div class="field"><label>Product image</label><input id="candleImageFile" type="file" accept="image/*"><img id="candlePreview" class="preview hidden" alt="Candle preview"><input id="candleImage" type="hidden"></div><div class="field"><label>Secure payment</label><div class="row-meta" style="padding:12px;border:1px solid var(--line);background:var(--cream);line-height:1.7">Secure checkout creates the Razorpay payment flow from the live product price.</div></div><div class="field"><label>Stock</label><select id="candleStock"><option value="true">In stock</option><option value="false">Out of stock</option></select></div><div class="actions"><button class="btn" type="submit">Save candle</button><button class="btn secondary" type="button" id="clearCandle">Clear</button></div><div id="candleMessage" class="message"></div></form></div><div class="card"><div class="toolbar"><div><div class="eyebrow">Only candle products</div><h2>Candles</h2></div><button class="btn secondary" id="refreshCandles">Refresh</button></div><div id="candleList" class="list"></div></div></div></section>
 <section id="tab-chocolates" class="hidden"><div class="grid"><div class="card"><div class="eyebrow">Product type · Chocolate</div><h2 id="chocolateFormTitle">Add chocolate</h2><form id="chocolateForm"><input type="hidden" id="chocolateId"><div class="field"><label>Name</label><input id="chocolateName" required placeholder="e.g. Premium Almond Chocolate"></div><div class="field"><label>Description</label><textarea id="chocolateDescription" placeholder="Describe the chocolate, ingredients or finish"></textarea></div><div class="field"><label>Price (₹)</label><input id="chocolatePrice" type="number" min="0" step="1" required><div class="row-meta">Authoritative store price used by secure checkout.</div></div><div class="field"><label>Product image</label><input id="chocolateImageFile" type="file" accept="image/*"><img id="chocolatePreview" class="preview hidden" alt="Chocolate preview"><input id="chocolateImage" type="hidden"></div><div class="field"><label>Secure payment</label><div class="row-meta" style="padding:12px;border:1px solid var(--line);background:var(--cream);line-height:1.7">Secure checkout creates the Razorpay payment flow from the live product price.</div></div><div class="field"><label>Stock</label><select id="chocolateStock"><option value="true">In stock</option><option value="false">Out of stock</option></select></div><div class="actions"><button class="btn" type="submit">Save chocolate</button><button class="btn secondary" type="button" id="clearChocolate">Clear</button></div><div id="chocolateMessage" class="message"></div></form></div><div class="card"><div class="toolbar"><div><div class="eyebrow">Only chocolate products</div><h2>Chocolates</h2></div><button class="btn secondary" id="refreshChocolates">Refresh</button></div><div id="chocolateList" class="list"></div></div></div></section>
 <section id="tab-orders" class="hidden"><div class="card">
@@ -45,8 +45,8 @@
 <section id="tab-homepage-media" class="hidden">
   <div class="grid">
     <div class="card">
-      <h2>Homepage media</h2>
-      <p class="note">Upload the media that should appear in the opening section of the AVNAUR website. Choose either a video or an image.</p>
+      <h2>Homepage video</h2>
+      <p class="note">This controls the opening video on the left side of the homepage. Upload an MP4 file or paste a direct public MP4 link.</p>
 
       <form id="homepageMediaForm">
         <div class="field">
@@ -59,8 +59,14 @@
 
         <div class="field">
           <label>Upload file</label>
-          <input id="mediaFile" type="file" accept="video/mp4,image/jpeg,image/png,image/webp" required>
+          <input id="mediaFile" type="file" accept="video/mp4,image/jpeg,image/png,image/webp">
           <div id="mediaFileNote" class="row-meta">MP4 video recommended for the AVNAUR opening.</div>
+        </div>
+
+        <div class="field" id="videoUrlField">
+          <label>Video upload link</label>
+          <input id="mediaUrl" type="url" placeholder="https://.../avnaur-video.mp4">
+          <div class="row-meta">Paste a direct public MP4 video link, or use the file upload above.</div>
         </div>
 
         <div id="mediaPreviewBox" class="field">
@@ -94,6 +100,56 @@
     </div>
   </div>
 </section>
+<section id="tab-chocolate-video" class="hidden">
+  <div class="grid">
+    <div class="card">
+      <div class="eyebrow">Chocolate section media</div>
+      <h2>Chocolate video</h2>
+      <p class="note">This video controls the chocolate video area on the lower part of the homepage. It is separate from the opening homepage video.</p>
+
+      <form id="chocolateVideoForm">
+        <div class="field">
+          <label>Upload MP4 video</label>
+          <input id="chocolateVideoFile" type="file" accept="video/mp4">
+          <div class="row-meta">Upload the video that should appear in the chocolate section.</div>
+        </div>
+
+        <div class="field">
+          <label>Video upload link</label>
+          <input id="chocolateVideoUrl" type="url" placeholder="https://.../chocolate-video.mp4">
+          <div class="row-meta">Paste a direct public MP4 link instead of uploading a file.</div>
+        </div>
+
+        <div class="field">
+          <label>Preview</label>
+          <video id="chocolateVideoPreview" class="preview hidden" controls muted playsinline></video>
+        </div>
+
+        <div class="field">
+          <label>Status</label>
+          <select id="chocolateVideoActive">
+            <option value="true">Use this in chocolate section</option>
+            <option value="false">Save but don't display</option>
+          </select>
+        </div>
+
+        <div class="actions">
+          <button class="btn" type="submit">Upload &amp; save</button>
+          <button class="btn secondary" type="button" id="clearChocolateVideo">Clear</button>
+        </div>
+        <div id="chocolateVideoMessage" class="message"></div>
+      </form>
+    </div>
+
+    <div class="card">
+      <div class="toolbar">
+        <h2>Current chocolate video</h2>
+        <button class="btn secondary" id="refreshChocolateVideo">Refresh</button>
+      </div>
+      <div id="chocolateVideoList" class="list"></div>
+    </div>
+  </div>
+</section>
 <section id="tab-settings" class="hidden"><div class="card"><h2>Store settings</h2><form id="settingsForm"><div class="field"><label>WhatsApp link</label><input id="sWhatsapp" type="url" placeholder="https://wa.me/..."></div><div class="field"><label>Instagram link</label><input id="sInstagram" type="url" placeholder="https://www.instagram.com/..."></div><div class="actions"><button class="btn" type="submit">Save settings</button><button class="btn secondary" type="button" id="refreshSettings">Refresh</button></div><div id="settingsMessage" class="message"></div></form></div></section>
 </main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const SUPABASE_URL='https://ofyejsjxmhdvxdwjflhu.supabase.co';const SUPABASE_KEY='sb_publishable_sI2-_B0LUG9yuysnm-lw5w_7371zv4Z';const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);const $=id=>document.getElementById(id);const money=n=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(Number(n||0));const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let products=[],orders=[],feedback=[],promotions=[];
@@ -101,7 +157,7 @@ function msg(id,text,ok=false){$(id).textContent=text;$(id).className=ok?'messag
 async function init(){const {data:{session}}=await sb.auth.getSession();session?showApp():showLogin();}
 function showLogin(){$('loginView').classList.remove('hidden');$('app').classList.add('hidden')}function showApp(){$('loginView').classList.add('hidden');$('app').classList.remove('hidden');loadAll()}
 $('loginForm').onsubmit=async e=>{e.preventDefault();msg('loginMessage','Signing in…',true);const {error}=await sb.auth.signInWithPassword({email:$('loginEmail').value.trim(),password:$('loginPassword').value});if(error){msg('loginMessage',error.message);return}showApp()};$('logoutBtn').onclick=async()=>{await sb.auth.signOut();showLogin()};
-document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');['candles','chocolates','orders','feedback','promotions','settings','homepage-media'].forEach(t=>$('tab-'+t).classList.toggle('hidden',t!==b.dataset.tab));});
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');['candles','chocolates','orders','feedback','promotions','settings','homepage-media','chocolate-video'].forEach(t=>$('tab-'+t).classList.toggle('hidden',t!==b.dataset.tab));});
 async function loadAll(){await Promise.all([loadProducts(),loadOrders(),loadFeedback(),loadPromotions(),loadSettings()])}
 async function loadProducts(){
   const {data,error}=await sb.from('products').select('*').order('created_at',{ascending:false});
@@ -357,12 +413,15 @@ async function loadHomepageMedia(){
 $('mediaType').onchange=()=>{
   const type=$('mediaType').value;
   $('mediaFile').value='';
+  $('mediaUrl').value='';
+  $('videoUrlField').classList.toggle('hidden',type!=='video');
   $('mediaVideoPreview').classList.toggle('hidden',type!=='video');
   $('mediaImagePreview').classList.toggle('hidden',type!=='image');
   $('mediaFileNote').textContent=type==='video'
     ? 'MP4 video recommended for the AVNAUR opening.'
     : 'JPEG, PNG or WebP image.';
 };
+$('videoUrlField').classList.toggle('hidden',$('mediaType').value!=='video');
 
 $('mediaFile').onchange=()=>{
   const file=$('mediaFile').files[0];
@@ -373,6 +432,7 @@ $('mediaFile').onchange=()=>{
     $('mediaFile').value='';
     return;
   }
+  if(type==='video') $('mediaUrl').value='';
   msg('homepageMediaMessage','',true);
   const url=URL.createObjectURL(file);
   if(type==='video'){
@@ -386,32 +446,53 @@ $('mediaFile').onchange=()=>{
   }
 };
 
+$('mediaUrl').oninput=()=>{
+  if($('mediaUrl').value.trim() && $('mediaType').value==='video'){
+    $('mediaFile').value='';
+    $('mediaVideoPreview').src=$('mediaUrl').value.trim();
+    $('mediaVideoPreview').classList.remove('hidden');
+    $('mediaImagePreview').classList.add('hidden');
+  }
+};
+
 $('homepageMediaForm').onsubmit=async e=>{
   e.preventDefault();
   const type=$('mediaType').value;
   const file=$('mediaFile').files[0];
+  const directUrl=$('mediaUrl').value.trim();
 
-  if(!mediaAccepts(type,file)){
-    msg('homepageMediaMessage',type==='video'?'Please choose an MP4 video.':'Please choose a JPEG, PNG or WebP image.');
+  if(type==='video' && directUrl){
+    try{
+      const parsed=new URL(directUrl);
+      if(!/^https?:$/i.test(parsed.protocol)) throw new Error('invalid protocol');
+    }catch(err){
+      msg('homepageMediaMessage','Please enter a valid public video URL.');
+      return;
+    }
+  } else if(!mediaAccepts(type,file)){
+    msg('homepageMediaMessage',type==='video'?'Choose an MP4 file or paste a direct public video link.':'Please choose a JPEG, PNG or WebP image.');
     return;
   }
 
-  msg('homepageMediaMessage','Uploading…',true);
+  msg('homepageMediaMessage',directUrl?'Saving video link…':'Uploading…',true);
 
-  const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'-');
-  const path=`homepage/${crypto.randomUUID()}-${safe}`;
+  let publicUrl=directUrl;
+  if(!directUrl){
+    const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'-');
+    const path=`homepage/${crypto.randomUUID()}-${safe}`;
 
-  const {error:uploadError}=await sb.storage.from('product-image').upload(path,file,{
-    upsert:false,
-    contentType:file.type
-  });
+    const {error:uploadError}=await sb.storage.from('product-image').upload(path,file,{
+      upsert:false,
+      contentType:file.type
+    });
 
-  if(uploadError){
-    msg('homepageMediaMessage',uploadError.message);
-    return;
+    if(uploadError){
+      msg('homepageMediaMessage',uploadError.message);
+      return;
+    }
+
+    publicUrl=sb.storage.from('product-image').getPublicUrl(path).data.publicUrl;
   }
-
-  const publicUrl=sb.storage.from('product-image').getPublicUrl(path).data.publicUrl;
 
   const {data:existing,error:readError}=await sb.from('settings')
     .select('id')
@@ -464,6 +545,7 @@ window.disableHomepageMedia=async()=>{
 
 $('clearHomepageMedia').onclick=()=>{
   $('mediaFile').value='';
+  $('mediaUrl').value='';
   $('mediaVideoPreview').src='';
   $('mediaImagePreview').src='';
   $('mediaVideoPreview').classList.add('hidden');
@@ -472,6 +554,116 @@ $('clearHomepageMedia').onclick=()=>{
 };
 
 $('refreshHomepageMedia').onclick=loadHomepageMedia;
+
+// Separate video control for the chocolate section on the homepage.
+async function loadChocolateVideo(){
+  const {data,error}=await sb.from('settings').select('id,chocolate_video_url,chocolate_video_active').order('id',{ascending:true}).limit(1).maybeSingle();
+  if(error){
+    $('chocolateVideoList').innerHTML='<div class="empty">'+esc(error.message)+'</div>';
+    return;
+  }
+  const url=data?.chocolate_video_url||'';
+  const active=data?.chocolate_video_active===true;
+  if(!url){
+    $('chocolateVideoList').innerHTML='<div class="empty">No chocolate video uploaded yet.</div>';
+    return;
+  }
+  $('chocolateVideoList').innerHTML=`<div class="media-current"><span class="status media-badge">${active?'Live in chocolate section':'Saved but inactive'}</span><video src="${esc(url)}" controls muted playsinline></video><div class="row-meta">${esc(url)}</div><div class="actions"><button type="button" onclick="disableChocolateVideo()">Disable chocolate video</button></div></div>`;
+}
+
+$('chocolateVideoFile').onchange=()=>{
+  const file=$('chocolateVideoFile').files[0];
+  if(!file)return;
+  if(file.type!=='video/mp4'){
+    msg('chocolateVideoMessage','Please choose an MP4 video.');
+    $('chocolateVideoFile').value='';
+    return;
+  }
+  $('chocolateVideoUrl').value='';
+  $('chocolateVideoPreview').src=URL.createObjectURL(file);
+  $('chocolateVideoPreview').classList.remove('hidden');
+  msg('chocolateVideoMessage','',true);
+};
+
+$('chocolateVideoUrl').oninput=()=>{
+  const url=$('chocolateVideoUrl').value.trim();
+  if(!url)return;
+  $('chocolateVideoFile').value='';
+  $('chocolateVideoPreview').src=url;
+  $('chocolateVideoPreview').classList.remove('hidden');
+};
+
+$('chocolateVideoForm').onsubmit=async e=>{
+  e.preventDefault();
+  const file=$('chocolateVideoFile').files[0];
+  const directUrl=$('chocolateVideoUrl').value.trim();
+  if(file && file.type!=='video/mp4'){
+    msg('chocolateVideoMessage','Please choose an MP4 video.');
+    return;
+  }
+  if(!file && !directUrl){
+    msg('chocolateVideoMessage','Choose an MP4 file or paste a direct public MP4 link.');
+    return;
+  }
+  if(directUrl){
+    try{
+      const parsed=new URL(directUrl);
+      if(!/^https?:$/i.test(parsed.protocol)) throw new Error('invalid');
+    }catch(err){
+      msg('chocolateVideoMessage','Please enter a valid public video URL.');
+      return;
+    }
+  }
+  msg('chocolateVideoMessage',directUrl?'Saving video link…':'Uploading…',true);
+  let publicUrl=directUrl;
+  if(!directUrl){
+    const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'-');
+    const path=`chocolate-video/${crypto.randomUUID()}-${safe}`;
+    const {error:uploadError}=await sb.storage.from('product-image').upload(path,file,{upsert:false,contentType:'video/mp4'});
+    if(uploadError){
+      msg('chocolateVideoMessage',uploadError.message);
+      return;
+    }
+    publicUrl=sb.storage.from('product-image').getPublicUrl(path).data.publicUrl;
+  }
+  const {data:existing,error:readError}=await sb.from('settings').select('id').order('id',{ascending:true}).limit(1).maybeSingle();
+  if(readError){
+    msg('chocolateVideoMessage',readError.message);
+    return;
+  }
+  const payload={chocolate_video_url:publicUrl,chocolate_video_active:$('chocolateVideoActive').value==='true'};
+  const result=existing?.id
+    ? await sb.from('settings').update(payload).eq('id',existing.id)
+    : await sb.from('settings').insert(payload);
+  if(result.error){
+    msg('chocolateVideoMessage',result.error.message);
+    return;
+  }
+  msg('chocolateVideoMessage','Chocolate video saved.',true);
+  $('chocolateVideoFile').value='';
+  $('chocolateVideoUrl').value='';
+  $('chocolateVideoPreview').src='';
+  $('chocolateVideoPreview').classList.add('hidden');
+  loadChocolateVideo();
+};
+
+window.disableChocolateVideo=async()=>{
+  const {data:existing,error}=await sb.from('settings').select('id').order('id',{ascending:true}).limit(1).maybeSingle();
+  if(error){alert(error.message);return;}
+  if(!existing?.id)return;
+  const {error:updateError}=await sb.from('settings').update({chocolate_video_active:false}).eq('id',existing.id);
+  if(updateError) alert(updateError.message);
+  else loadChocolateVideo();
+};
+
+$('clearChocolateVideo').onclick=()=>{
+  $('chocolateVideoFile').value='';
+  $('chocolateVideoUrl').value='';
+  $('chocolateVideoPreview').src='';
+  $('chocolateVideoPreview').classList.add('hidden');
+  $('chocolateVideoMessage').textContent='';
+};
+$('refreshChocolateVideo').onclick=loadChocolateVideo;
 
 init();
 </script></body></html>
