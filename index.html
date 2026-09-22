@@ -972,6 +972,12 @@ footer{background:#000!important;}
 .hero-discover{display:inline-flex!important;margin:0!important;padding:12px 28px!important;border:1px solid rgba(255,255,255,.9)!important;background:rgba(0,0,0,.55)!important;color:#fff!important;backdrop-filter:blur(3px)!important;font-size:14px!important;}
 .hero-discover:hover{background:#fff!important;color:#000!important;}
 </style>
+<style id="avnaur-hero-mobile-height-fix">
+@media(max-width:900px){
+  .hero-media{min-height:0!important;height:auto!important;}
+  .hero-media video{height:auto!important;}
+}
+</style>
 <style id="avnaur-product-empty-state">
 .collection-empty{grid-column:1/-1;padding:62px 24px 68px;text-align:center;border-top:1px solid var(--av-line);border-bottom:1px solid var(--av-line);}
 .collection-empty-label{margin-bottom:12px;text-transform:uppercase;letter-spacing:3px;font-size:10px;color:var(--av-accent);}
@@ -1148,7 +1154,241 @@ nav .links a{color:#fff!important;}
 #contact .social-btn{background:#fff!important;color:#332a24!important;border:1px solid #fff!important;}
 #contact .social-btn:hover{background:#332a24!important;color:#fff!important;border-color:#332a24!important;}
 </style>
-</head><body><!-- Official AVNAUR logo mark embedded from user-provided brand artwork --><nav><a href="#" class="brand" aria-label="AVNAUR home"><img class="brand-new-logo" src="data:image/png;base64,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" alt="AVNAUR"></a><div class="links"><a href="#about">Our Story</a><a href="#collection">Collection</a><a href="#reviews">Reviews</a><a href="#contact">Contact</a></div><div class="account-bar"><button class="account-trigger" id="accountTrigger" type="button">Login</button><button class="cart-trigger" id="cartTrigger" type="button" aria-label="Open shopping cart">Cart <span class="cart-count" id="cartCount">0</span></button></div></nav>
+
+<style id="avnaur-mobile-header-ref">
+.mobile-menu-trigger,.cart-icon,.mobile-menu{display:none}
+@media(max-width:760px){
+  nav{height:72px!important;padding:0 6%!important;background:#000!important;border-bottom:0!important}
+  .brand-new-logo{width:125px!important;height:auto!important}
+  .account-bar{margin-left:auto!important;display:flex!important;align-items:center!important;gap:18px!important}
+  .account-trigger{display:none!important}
+  .cart-trigger{display:inline-flex!important;align-items:center!important;justify-content:center!important;position:relative!important;width:42px!important;height:42px!important;padding:0!important;border:0!important;background:transparent!important;color:#fff!important;margin:0!important;font-size:0!important}
+  .cart-label{display:none!important}
+  .cart-icon{display:block!important;width:28px!important;height:28px!important;color:#fff!important}
+  .cart-count{position:absolute!important;top:-3px!important;right:-5px!important;margin:0!important;min-width:17px!important;height:17px!important;background:#fff!important;color:#000!important;font-size:9px!important;line-height:17px!important;border-radius:50%!important;font-weight:600!important}
+  .mobile-menu-trigger{display:flex!important;width:34px!important;height:34px!important;padding:4px!important;border:0!important;background:transparent!important;flex-direction:column!important;justify-content:center!important;gap:5px!important;cursor:pointer!important}
+  .mobile-menu-trigger span{display:block!important;width:27px!important;height:2px!important;background:#fff!important;border-radius:2px!important;transition:.2s!important}
+  .mobile-menu{position:fixed!important;top:72px!important;right:0!important;left:0!important;z-index:30!important;background:#000!important;border-top:1px solid rgba(255,255,255,.15)!important;padding:18px 6% 24px!important;display:none!important;flex-direction:column!important}
+  .mobile-menu.open{display:flex!important}
+  .mobile-menu a,.mobile-menu button{color:#fff!important;text-align:left!important;padding:14px 0!important;border:0!important;border-bottom:1px solid rgba(255,255,255,.12)!important;background:transparent!important;font:inherit!important;letter-spacing:.08em!important;text-transform:uppercase!important;font-size:12px!important}
+  .mobile-menu button{cursor:pointer!important}
+}
+</style>
+<style id="avnaur-whoop-header-all-screens">
+/* Clean WHOOP-style header on desktop + mobile */
+nav{
+  height:72px!important;
+  padding:0 3%!important;
+  background:#000!important;
+  border-bottom:0!important;
+}
+nav .links{display:none!important;}
+.account-bar{margin-left:auto!important;display:flex!important;align-items:center!important;gap:18px!important;}
+.account-trigger{display:none!important;}
+.mobile-menu-trigger{
+  display:flex!important;
+  width:34px!important;
+  height:34px!important;
+  padding:4px!important;
+  border:0!important;
+  background:transparent!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  gap:5px!important;
+  cursor:pointer!important;
+}
+.mobile-menu-trigger span{display:block!important;width:27px!important;height:2px!important;background:#fff!important;border-radius:2px!important;}
+.cart-trigger{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  position:relative!important;
+  width:42px!important;
+  height:42px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  color:#fff!important;
+  margin:0!important;
+  font-size:0!important;
+}
+.cart-label{display:none!important;}
+.cart-icon{display:block!important;width:28px!important;height:28px!important;color:#fff!important;}
+.cart-count{
+  position:absolute!important;
+  top:-3px!important;
+  right:-5px!important;
+  margin:0!important;
+  min-width:17px!important;
+  height:17px!important;
+  background:#fff!important;
+  color:#000!important;
+  font-size:9px!important;
+  line-height:17px!important;
+  border-radius:50%!important;
+  font-weight:600!important;
+}
+.mobile-menu{
+  position:fixed!important;
+  top:72px!important;
+  right:0!important;
+  left:0!important;
+  z-index:30!important;
+  background:#000!important;
+  border-top:1px solid rgba(255,255,255,.15)!important;
+  padding:18px 6% 24px!important;
+  display:none!important;
+  flex-direction:column!important;
+}
+.mobile-menu.open{display:flex!important;}
+.mobile-menu a,.mobile-menu button{
+  color:#fff!important;
+  text-align:left!important;
+  padding:14px 0!important;
+  border:0!important;
+  border-bottom:1px solid rgba(255,255,255,.12)!important;
+  background:transparent!important;
+  font:inherit!important;
+  letter-spacing:.08em!important;
+  text-transform:uppercase!important;
+  font-size:12px!important;
+}
+.mobile-menu button{cursor:pointer!important;}
+@media(max-width:760px){
+  nav{padding:0 6%!important;}
+  .brand-new-logo{width:125px!important;}
+}
+</style>
+
+
+<style id="avnaur-cart-icon-visibility-fix">
+.cart-trigger{visibility:visible!important;opacity:1!important;overflow:visible!important;}
+.cart-icon{display:block!important;visibility:visible!important;opacity:1!important;color:#fff!important;width:30px!important;height:30px!important;flex:0 0 30px!important;}
+.cart-trigger .cart-count{z-index:2!important;}
+</style>
+
+
+<style id="avnaur-final-header-lock">
+/* FINAL HEADER: never hide the logo, menu or basket. */
+nav{
+  width:100%!important;
+  min-width:0!important;
+  overflow:visible!important;
+  background:#000!important;
+  color:#fff!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+}
+nav .brand{
+  display:flex!important;
+  align-items:center!important;
+  visibility:visible!important;
+  opacity:1!important;
+  background:#000!important;
+  color:#fff!important;
+}
+nav .brand-new-logo{display:block!important;visibility:visible!important;opacity:1!important;}
+.account-bar{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:18px!important;
+  margin-left:auto!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+.mobile-menu-trigger{
+  display:flex!important;
+  flex:0 0 34px!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+.cart-trigger{
+  display:flex!important;
+  flex:0 0 42px!important;
+  width:42px!important;
+  height:42px!important;
+  position:relative!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  outline:0!important;
+  background:transparent!important;
+  color:#fff!important;
+  box-shadow:none!important;
+  visibility:visible!important;
+  opacity:1!important;
+  overflow:visible!important;
+  -webkit-appearance:none!important;
+  appearance:none!important;
+}
+.cart-trigger:hover,.cart-trigger:focus,.cart-trigger:active{
+  background:transparent!important;
+  color:#fff!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+}
+.cart-label{display:none!important;}
+.basket-icon{
+  position:relative!important;
+  display:block!important;
+  width:25px!important;
+  height:24px!important;
+  flex:0 0 25px!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+.basket-body{
+  position:absolute!important;
+  left:2px!important;
+  top:8px!important;
+  width:21px!important;
+  height:14px!important;
+  border:2px solid #fff!important;
+  border-radius:2px 2px 5px 5px!important;
+  display:block!important;
+  background:transparent!important;
+}
+.basket-handle{
+  position:absolute!important;
+  left:7px!important;
+  top:3px!important;
+  width:11px!important;
+  height:9px!important;
+  border:2px solid #fff!important;
+  border-bottom:0!important;
+  border-radius:8px 8px 0 0!important;
+  display:block!important;
+  background:transparent!important;
+}
+.cart-count{
+  position:absolute!important;
+  top:-1px!important;
+  right:-4px!important;
+  z-index:10!important;
+  min-width:17px!important;
+  width:17px!important;
+  height:17px!important;
+  margin:0!important;
+  padding:0!important;
+  display:grid!important;
+  place-items:center!important;
+  border-radius:50%!important;
+  background:#fff!important;
+  color:#000!important;
+  font-size:9px!important;
+  line-height:17px!important;
+}
+@media(max-width:760px){
+  nav{height:72px!important;padding:0 6%!important;}
+  .account-bar{gap:18px!important;}
+}
+</style>
+</head><body><!-- Official AVNAUR logo mark embedded from user-provided brand artwork --><nav><a href="#" class="brand" aria-label="AVNAUR home"><img class="brand-new-logo" src="data:image/png;base64,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" alt="AVNAUR"></a><div class="links"><a href="#about">Our Story</a><a href="#collection">Collection</a><a href="#reviews">Reviews</a><a href="#contact">Contact</a></div><div class="account-bar"><button class="account-trigger" id="accountTrigger" type="button">Login</button><button class="mobile-menu-trigger" id="mobileMenuTrigger" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button><button class="cart-trigger" id="cartTrigger" type="button" aria-label="Open shopping basket"><span class="cart-label">Cart</span><span class="basket-icon" aria-hidden="true"><span class="basket-handle"></span><span class="basket-body"></span></span><span class="cart-count" id="cartCount">0</span></button></div></nav><div class="mobile-menu" id="mobileMenu" aria-hidden="true"><a href="#about">Our Story</a><a href="#collection">Collection</a><a href="#reviews">Reviews</a><a href="#contact">Contact</a><button type="button" id="mobileAccountTrigger">My Account</button></div>
 <!-- AVNAUR Customer Account -->
 <div class="account-modal" id="accountModal" aria-hidden="true">
   <div class="account-card">
@@ -1778,6 +2018,24 @@ AVNAUR_SB.auth.onAuthStateChange(async()=>{await refreshAccountUI();});
 (async function initAvnaur(){
   await Promise.all([loadSettings(),loadPromotions(),loadProducts()]);
   renderCart();syncSocialLinks();
+})();
+</script>
+
+<script>
+(function(){
+  const trigger=document.getElementById('mobileMenuTrigger');
+  const menu=document.getElementById('mobileMenu');
+  const account=document.getElementById('mobileAccountTrigger');
+  if(!trigger||!menu)return;
+  const closeMenu=()=>{menu.classList.remove('open');menu.setAttribute('aria-hidden','true');trigger.setAttribute('aria-expanded','false');};
+  trigger.addEventListener('click',()=>{
+    const open=!menu.classList.contains('open');
+    menu.classList.toggle('open',open);
+    menu.setAttribute('aria-hidden',String(!open));
+    trigger.setAttribute('aria-expanded',String(open));
+  });
+  menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMenu));
+  account?.addEventListener('click',async()=>{closeMenu();const real=document.getElementById('accountTrigger');real?.click();});
 })();
 </script>
 </body></html>
