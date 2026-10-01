@@ -246,6 +246,34 @@ $('clearCandle').onclick=clearCandle;
 $('clearChocolate').onclick=clearChocolate;
 $('refreshCandles').onclick=loadProducts;
 $('refreshChocolates').onclick=loadProducts;
+function orderMatchesSearch(o){
+  const q=String($('orderSearch').value||'').trim().toLowerCase();
+  if(!q)return true;
+  return [o.id,o.customer_name,o.phone,o.email,o.razorpay_payment_id,o.razorpay_reference_id,o.razorpay_payment_link_id]
+    .some(v=>String(v??'').toLowerCase().includes(q));
+}
+
+function orderMatchesFilter(o){
+  const filter=$('orderFilter').value;
+  if(filter==='all')return true;
+  const paymentStatus=String(o.payment_status||'').toLowerCase();
+  const orderStatus=String(o.status||'').toLowerCase();
+  if(filter==='paid')return paymentStatus==='paid' || (!paymentStatus && orderStatus==='paid');
+  if(filter==='pending')return paymentStatus==='pending' || (!paymentStatus && orderStatus==='pending');
+  return orderStatus===filter;
+}
+
+function locationMarkup(o){
+  const location=o.customer_location;
+  if(!location)return '';
+  const text=typeof location==='string'?location:(location.address||location.name||location.lat!=null?JSON.stringify(location):String(location));
+  let href='';
+  if(location && typeof location==='object' && location.lat!=null && location.lng!=null){
+    href=`https://www.google.com/maps?q=${encodeURIComponent(location.lat+','+location.lng)}`;
+  }
+  return `<div class="location-box"><strong>Live location:</strong> ${esc(text)}${href?`<br><a class="location-link" href="${esc(href)}" target="_blank" rel="noopener">Open in Google Maps</a>`:''}</div>`;
+}
+
 async function loadOrders(){
   const {data,error}=await sb.from('orders').select('*').order('created_at',{ascending:false});
   if(error){
