@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Rao Ventures | Control Room</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet"><style>
+:root{--cream:#f7f3ed;--paper:#fffdf9;--ink:#26211e;--muted:#756c65;--gold:#a98a68;--line:#ded5ca;--dark:#29231f;--danger:#a94b42;--ok:#4f745b}*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:"DM Sans",Arial,sans-serif}button,input,textarea,select{font:inherit}.hidden{display:none!important}.top{height:76px;border-bottom:1px solid var(--line);background:rgba(247,243,237,.96);display:flex;align-items:center;justify-content:space-between;padding:0 5%;position:sticky;top:0;z-index:5}.brand{font-family:"Playfair Display",serif;letter-spacing:6px;font-size:25px}.admin-tag{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted)}.wrap{max-width:1300px;margin:auto;padding:35px 5% 70px}.login{min-height:calc(100vh - 76px);display:grid;place-items:center}.login-card{width:min(430px,100%);background:var(--paper);border:1px solid var(--line);padding:36px}.login h1{font-family:"Playfair Display",serif;font-weight:500;font-size:46px;margin:12px 0}.eyebrow{text-transform:uppercase;letter-spacing:3px;font-size:10px;color:var(--gold);font-weight:600}.field{display:grid;gap:7px;margin:14px 0}.field label{font-size:11px;text-transform:uppercase;letter-spacing:1px}.field input,.field textarea,.field select{width:100%;padding:12px;border:1px solid var(--line);background:#fffdf9;color:var(--ink);outline:none}.field textarea{min-height:100px;resize:vertical}.btn{border:0;background:var(--dark);color:#fff;padding:13px 20px;font-size:11px;letter-spacing:1px;text-transform:uppercase;cursor:pointer}.btn.secondary{background:transparent;color:var(--dark);border:1px solid var(--dark)}.btn.danger{background:var(--danger)}.message{font-size:12px;margin-top:12px;color:var(--danger)}.nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}.nav button{border:1px solid var(--line);background:var(--paper);padding:11px 16px;font-size:11px;letter-spacing:.8px;text-transform:uppercase;cursor:pointer}.nav button.active{background:var(--dark);color:white;border-color:var(--dark)}.grid{display:grid;grid-template-columns:1fr 1.6fr;gap:22px}.card{background:var(--paper);border:1px solid var(--line);padding:24px}.card h2{font-family:"Playfair Display",serif;font-size:32px;font-weight:500;margin:0 0 20px}.toolbar{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:16px}.toolbar h2{margin:0}.list{display:grid;gap:10px}.row{border:1px solid var(--line);padding:15px;background:#fff}.row-main{display:flex;justify-content:space-between;gap:15px}.row-title{font-weight:600}.row-meta{font-size:12px;color:var(--muted);line-height:1.6;margin-top:5px}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.actions button{border:1px solid var(--line);background:var(--cream);padding:7px 10px;font-size:10px;text-transform:uppercase;letter-spacing:.6px;cursor:pointer}.status{font-size:10px;text-transform:uppercase;letter-spacing:1px;padding:5px 8px;border:1px solid var(--line)}.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:22px}.stat{background:var(--paper);border:1px solid var(--line);padding:18px}.stat b{display:block;font-family:"Playfair Display",serif;font-size:28px;margin-top:5px}.empty{padding:25px;text-align:center;color:var(--muted);border:1px dashed var(--line)}.note{font-size:12px;color:var(--muted);line-height:1.7;margin-top:12px}.preview{max-width:180px;max-height:140px;object-fit:cover;border:1px solid var(--line);margin-top:8px}.order-items{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-size:12px}.pill{display:inline-block;border:1px solid var(--line);padding:4px 8px;font-size:10px;text-transform:uppercase;letter-spacing:.6px;margin:2px}.success{color:var(--ok)}
+.order-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:12px 0 4px}
+.order-tools input,.order-tools select{padding:10px 12px;border:1px solid var(--line);background:#fffdf9;color:var(--ink);font:inherit;font-size:12px}
+.order-tools input{min-width:220px;flex:1}
+.danger-btn{border:1px solid var(--danger)!important;color:var(--danger)!important;background:#fff!important}
+.location-box{margin-top:10px;padding:10px 12px;border:1px solid var(--line);background:var(--cream);font-size:12px;line-height:1.6}
+.location-link{display:inline-block;margin-top:5px;text-decoration:underline;color:var(--ink)}
+.order-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}@media(max-width:900px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+
+.homepage-media-preview{max-width:100%;max-height:260px;object-fit:contain;background:var(--cream);border:1px solid var(--line);padding:8px}
+.media-current{padding:18px;border:1px solid var(--line);background:#fff}
+.media-current video,.media-current img{display:block;width:100%;max-height:280px;object-fit:contain;background:var(--cream)}
+.media-badge{display:inline-block;margin-bottom:10px}
+.rv-nav-link{display:inline-flex;align-items:center;border:1px solid var(--dark);background:var(--dark);color:#fff;text-decoration:none;padding:11px 16px;font-size:11px;letter-spacing:.8px;text-transform:uppercase;margin:0 0 22px}.rv-nav-link:hover{opacity:.85}@media(max-width:600px){.rv-nav-link{width:100%;justify-content:center}}
+
+/* Rao Ventures unified Control Room redesign */
+:root{--cream:#f2f5f8;--paper:#ffffff;--ink:#172536;--muted:#68788b;--gold:#b89458;--line:#dfe6ed;--dark:#122338;--danger:#a94442;--ok:#28765b;--rv-teal:#167c78}
+body{background:#f2f5f8;color:#172536;font-family:'DM Sans',Arial,sans-serif}
+.top{height:72px;background:#122338;color:#fff;border-bottom:1px solid #253d55;padding:0 4%;box-shadow:0 5px 24px #10223818}
+.brand{display:flex;align-items:center;gap:12px;font:800 16px 'DM Sans',sans-serif;letter-spacing:2.2px;color:#fff}
+.rv-header-mark{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(145deg,#254663,#14283d);border:1px solid #58748b;color:#d8bd8b;font-size:13px;letter-spacing:-1px}
+.admin-tag{color:#b7c6d4;font-weight:700;letter-spacing:1.5px}
+.wrap{max-width:1500px;padding:28px 4% 70px}
+.group-switcher{display:flex;gap:8px;padding:7px;background:#e7edf3;border:1px solid #dbe3eb;border-radius:13px;margin:0 0 24px;width:max-content;max-width:100%}
+.group-tab{border:0;border-radius:9px;background:transparent;color:#506176;padding:12px 20px;cursor:pointer;font-weight:800;font-size:12px;letter-spacing:.8px;text-align:left}
+.group-tab small{display:block;font-size:9px;letter-spacing:.4px;font-weight:500;margin-top:4px;color:inherit;opacity:.72;text-transform:none}
+.group-tab.active{background:#122338;color:white;box-shadow:0 4px 12px #12233820}
+#avnaurWorkspace .toolbar h1{color:#14283d;font-family:'DM Sans',sans-serif;font-weight:800;letter-spacing:-1.3px}
+#avnaurWorkspace .eyebrow,.rv-eyebrow{color:#167c78;font-weight:800;letter-spacing:1.8px}
+#avnaurWorkspace .card,#avnaurWorkspace .stat{border:1px solid #e0e7ee;border-radius:13px;box-shadow:0 8px 26px #13263b08;background:#fff}
+#avnaurWorkspace .card h2{font-family:'DM Sans',sans-serif;color:#14283d;font-weight:800;letter-spacing:-.5px}
+#avnaurWorkspace .nav button{border:1px solid #dce4ec;border-radius:8px;background:#fff;color:#526277;font-weight:700}
+#avnaurWorkspace .nav button.active{background:#122338;color:#fff;border-color:#122338}
+#avnaurWorkspace .btn{border-radius:8px;background:#122338;font-weight:700}
+#avnaurWorkspace .btn.secondary{background:#fff;color:#122338;border-color:#d3dde7}
+#avnaurWorkspace .row{border:1px solid #e1e8ef;border-radius:9px;background:#fff}
+#avnaurWorkspace input,#avnaurWorkspace textarea,#avnaurWorkspace select{border-radius:8px;border-color:#d9e2eb;background:#fbfcfe}
+#rvWorkspace{padding:2px 0 30px;color:#172536}
+#rvWorkspace .rv-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:15px;flex-wrap:wrap;margin:8px 0 20px}
+#rvWorkspace .rv-heading h1{font:800 34px 'DM Sans',sans-serif;letter-spacing:-1.1px;color:#122338;margin:7px 0 5px}
+#rvWorkspace .rv-heading p{margin:0;color:#728095}
+#rvWorkspace .rv-eyebrow{font-size:10px;text-transform:uppercase}
+#rvWorkspace .rv-badge{background:#e7f4f2;color:#145e5b;border:1px solid #cde7e3;border-radius:30px;padding:8px 12px;font-size:10px;font-weight:800;letter-spacing:1px}
+#rvWorkspace .rv-note{padding:13px 16px;border:1px solid #d9e6ed;background:#f7fbfd;border-radius:10px;margin:14px 0 20px;font-size:12px;line-height:1.7;color:#53677a}
+#rvWorkspace .cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:22px 0}
+#rvWorkspace .metric{background:#fff;border:1px solid #e2e9f0;border-radius:13px;padding:19px;box-shadow:0 8px 24px #13263b08}
+#rvWorkspace .metric span{font-size:10px;letter-spacing:1px;color:#718095;font-weight:800}
+#rvWorkspace .metric strong{font:800 28px 'DM Sans',sans-serif;color:#122338;margin-top:9px}
+#rvWorkspace .layout{display:grid;grid-template-columns:225px minmax(0,1fr);gap:16px;align-items:start}
+#rvWorkspace .side{background:#122338;padding:13px;border-radius:13px;height:max-content}
+#rvWorkspace .side button{width:100%;text-align:left;background:transparent;border:0;border-radius:8px;color:#c4d0dc;padding:11px 12px;margin:2px 0;font-size:12px;font-weight:600}
+#rvWorkspace .side button.active{background:#e7f4f2;color:#145e5b;font-weight:800}
+#rvWorkspace .panel{min-width:0;background:#fff;border:1px solid #e1e8ef;border-radius:13px;padding:23px;box-shadow:0 8px 24px #13263b08}
+#rvWorkspace h2{font:800 20px 'DM Sans',sans-serif;color:#122338}
+#rvWorkspace button{border:1px solid #122338;background:#122338;color:white;padding:11px 15px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700}
+#rvWorkspace button.secondary{background:#fff;color:#122338;border-color:#d7e0ea}
+#rvWorkspace input,#rvWorkspace select,#rvWorkspace textarea{width:100%;padding:11px 12px;border:1px solid #dce4ed;border-radius:8px;background:#fbfcfe;color:#172334}
+#rvWorkspace .formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#rvWorkspace .field{display:grid;gap:7px;margin:10px 0}
+#rvWorkspace .field label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#64758a;font-weight:800}
+#rvWorkspace .tablewrap{overflow:auto;border:1px solid #e2e9f0;border-radius:9px}
+#rvWorkspace table{border-collapse:collapse;width:100%;font-size:12px;min-width:580px}
+#rvWorkspace th,#rvWorkspace td{text-align:left;padding:12px;border-bottom:1px solid #e8edf2;vertical-align:top}
+#rvWorkspace th{font-size:9px;text-transform:uppercase;letter-spacing:1px;color:#6e7e91;background:#f7f9fc;white-space:nowrap}
+#rvWorkspace .tabs{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 16px}
+#rvWorkspace .tabs button{background:#f7f9fc;color:#172334;border:1px solid #e1e8ef}
+#rvWorkspace .tabs button.active{background:#122338;color:#fff}
+#rvWorkspace .hidden{display:none!important}
+@media(max-width:900px){#rvWorkspace .cards{grid-template-columns:repeat(2,1fr)}#rvWorkspace .layout{grid-template-columns:1fr}#rvWorkspace .side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.group-switcher{width:100%}.group-tab{flex:1;padding:11px 12px;font-size:10px}#rvWorkspace .formgrid{grid-template-columns:1fr}#rvWorkspace .panel{padding:15px}#rvWorkspace .side{grid-template-columns:1fr 1fr}#rvWorkspace .cards{gap:9px}#rvWorkspace .metric{padding:14px}#rvWorkspace .metric strong{font-size:23px}}
+
+
+/* Minimal Rao Ventures owner portal */
+:root{--cream:#f4f6f8;--paper:#fff;--ink:#172536;--muted:#718095;--gold:#b89458;--line:#dfe5eb;--dark:#122338}
+body{background:#f4f6f8;color:#172536}
+.top{height:82px;background:#fff;color:#122338;border-bottom:1px solid #e4e9ee;box-shadow:none;padding:0 5.5%}
+.brand{display:block;font:700 22px 'DM Sans',sans-serif;letter-spacing:5px;color:#122338}
+.admin-tag{font-size:9px;letter-spacing:2px;color:#778598}
+.login{min-height:calc(100vh - 82px);padding:50px 24px;display:grid;place-items:center;background:linear-gradient(180deg,#f8fafb 0%,#f1f4f7 100%)}
+.login-shell{width:min(560px,100%);padding:30px 24px;text-align:center}
+.login-wordmark{font:700 clamp(34px,6vw,54px) 'DM Sans',sans-serif;letter-spacing:clamp(5px,1.2vw,11px);color:#122338;white-space:nowrap}
+.login-caption{margin-top:13px;font-size:9px;letter-spacing:3.2px;color:#8793a1}
+.login-rule{width:54px;height:2px;background:#b89458;margin:34px auto 31px}
+.login-form{width:min(360px,100%);margin:0 auto;text-align:left}
+.login-form .field{margin:0 0 18px;gap:8px}
+.login-form .field label{font-size:10px;color:#536477;font-weight:700;letter-spacing:1.3px}
+.login-form .field input{height:48px;padding:0 14px;background:#fff;border:1px solid #d8e0e8;border-radius:5px;font-size:13px}
+.login-form .field input:focus{border-color:#8a9bad;box-shadow:0 0 0 3px #1223380d}
+.login-submit{width:100%;height:48px;margin-top:7px;display:flex;align-items:center;justify-content:space-between;padding:0 17px;border-radius:5px;background:#122338;font-size:11px;font-weight:700;letter-spacing:1.2px}
+.login-submit span{font-size:18px;font-weight:400}
+.login-foot{margin-top:36px;color:#9aa4af;font-size:9px;letter-spacing:2px}
+.login-form .message{min-height:16px}
+.welcome-dashboard{padding:14px 0 38px;max-width:1160px;margin:0 auto}
+.welcome-topline{display:flex;justify-content:space-between;gap:15px;color:#7d8b9a;font-size:9px;font-weight:700;letter-spacing:1.7px;padding:7px 0 22px;border-bottom:1px solid #dfe5eb}
+.welcome-copy{padding:62px 0 48px}
+.welcome-copy .eyebrow{color:#a17e4d;font-size:9px;letter-spacing:2.4px}
+.welcome-copy h1{font:500 clamp(34px,5vw,54px) 'DM Sans',sans-serif;letter-spacing:-2px;color:#122338;margin:14px 0 10px}
+.welcome-copy p{font-size:14px;color:#778597;margin:0}
+.welcome-business-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.welcome-business{min-height:280px;background:#fff;border:1px solid #e0e6ec;padding:27px;display:flex;flex-direction:column;box-shadow:0 8px 26px #14283d08}
+.business-index{font-size:9px;font-weight:700;letter-spacing:1.7px;color:#9a805e}
+.welcome-business h2{font:700 29px 'DM Sans',sans-serif;letter-spacing:2px;color:#122338;margin:32px 0 9px}
+.welcome-business p{font-size:13px;line-height:1.7;color:#748296;max-width:350px;margin:0}
+.business-bottom{margin-top:auto;padding-top:34px;display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid #e9edf1}
+.business-bottom>span{font-size:8px;font-weight:700;letter-spacing:1.3px;color:#91a0ae}
+.business-bottom button{border:0;background:transparent;color:#122338;padding:8px 0;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap}
+.business-bottom button span{font-size:16px;margin-left:8px}
+.welcome-footer{display:flex;justify-content:space-between;margin-top:25px;color:#9aa5b0;font-size:8px;font-weight:700;letter-spacing:1.6px}
+.workspace-return{margin:0 0 18px}
+.workspace-return button{border:0;background:transparent;color:#536477;padding:8px 0;font-size:11px;font-weight:700;cursor:pointer}
+.group-switcher{margin-top:8px}
+@media(max-width:650px){
+ .top{height:70px;padding:0 20px}.brand{font-size:16px;letter-spacing:3px}.admin-tag{font-size:8px;letter-spacing:1px}
+ .login{min-height:calc(100vh - 70px)}.login-shell{padding:20px 4px}.login-wordmark{letter-spacing:4px}
+ .welcome-copy{padding:42px 0 32px}.welcome-business-grid{grid-template-columns:1fr}.welcome-business{min-height:245px;padding:22px}
+ .welcome-topline{font-size:8px;letter-spacing:1px}.welcome-footer{font-size:7px}
+}
+
+</style></head><body><header class="top"><div class="brand">RAO VENTURES</div><div class="admin-tag">PRIVATE BUSINESS PORTAL</div></header>
+<section id="loginView" class="login"><div class="login-shell">
+  <div class="login-wordmark">RAO VENTURES</div>
+  <div class="login-caption">PRIVATE BUSINESS PORTAL</div>
+  <div class="login-rule"></div>
+  <form id="loginForm" class="login-form">
+    <div class="field"><label for="loginEmail">Email</label><input id="loginEmail" type="email" required autocomplete="username" placeholder="Enter your email"></div>
+    <div class="field"><label for="loginPassword">Password</label><input id="loginPassword" type="password" required autocomplete="current-password" placeholder="Enter your password"></div>
+    <button class="btn login-submit" type="submit">Sign in <span aria-hidden="true">→</span></button>
+    <div id="loginMessage" class="message"></div>
+  </form>
+  <div class="login-foot">AUTHORISED ACCESS ONLY</div>
+</div></section>
+<main id="app" class="wrap hidden">
+<section id="welcomeDashboard" class="welcome-dashboard">
+  <div class="welcome-topline"><span>RAO VENTURES / PRIVATE OFFICE</span><span id="welcomeDate"></span></div>
+  <div class="welcome-copy">
+    <div class="eyebrow">OWNER WORKSPACE</div>
+    <h1>Welcome back, Mr. Rao.</h1>
+    <p>Your business overview is ready.</p>
+  </div>
+  <div class="welcome-business-grid">
+    <article class="welcome-business avnaur-business">
+      <div class="business-index">01 / CONSUMER BRAND</div>
+      <h2>AVNAUR</h2>
+      <p>Chocolate, gifting and consumer products.</p>
+      <div class="business-bottom"><span>BRAND WORKSPACE</span><button type="button" id="enterAvnaur">Open workspace <span>→</span></button></div>
+    </article>
+    <article class="welcome-business group-business">
+      <div class="business-index">02 / PARENT COMPANY</div>
+      <h2>RAO VENTURES</h2>
+      <p>Group management, partners, operations and financial commitments.</p>
+      <div class="business-bottom"><span>GROUP MANAGEMENT</span><button type="button" id="enterRao">Open workspace <span>→</span></button></div>
+    </article>
+  </div>
+  <div class="welcome-footer"><span>ONE PRIVATE OFFICE</span><span>AVNAUR · RAO VENTURES</span></div>
+</section>
+<div id="workspace-return" class="workspace-return hidden"><button type="button" id="returnHome">← Back to overview</button></div>
+<div class="group-switcher hidden" role="tablist" aria-label="Company workspace">
+  <button type="button" class="group-tab active" id="switchAvnaur" aria-selected="true">AVNAUR <small>Brand workspace</small></button>
+  <button type="button" class="group-tab" id="switchRao" aria-selected="false">RAO VENTURES <small>Group management</small></button>
+</div>
+<div id="avnaurWorkspace" class="hidden"><div class="toolbar"><div><div class="eyebrow">AVNAUR control room</div><h1 style="font-family:'Playfair Display',serif;font-size:48px;font-weight:500;margin:8px 0">Welcome back, Mr. Rao</h1><p style="color:var(--muted);margin:0">Here's what's happening with AVNAUR today.</p></div><button class="btn secondary" id="logoutBtn">Log out</button></div>
+<div class="note" style="margin:0 0 18px;padding:12px 14px;border:1px solid var(--line);background:var(--paper);">Products are now separated by type: <strong>Candles</strong> and <strong>Chocolates</strong>. Make sure the Supabase <code>products.product_type</code> column has been added.</div>
+<div class="stats"><div class="stat"><div class="eyebrow">Products</div><b id="statProducts">0</b></div><div class="stat"><div class="eyebrow">Orders</div><b id="statOrders">0</b></div><div class="stat"><div class="eyebrow">Paid orders</div><b id="statPaid">0</b></div><div class="stat"><div class="eyebrow">Revenue</div><b id="statRevenue">₹0</b></div><div class="stat"><div class="eyebrow">Feedback</div><b id="statFeedback">0</b></div></div>
+<nav class="nav"><button class="active" data-tab="candles">Candles</button><button data-tab="chocolates">Chocolates</button><button data-tab="orders">Orders</button><button data-tab="feedback">Feedback</button><button data-tab="promotions">Promotions</button><button data-tab="settings">Settings</button><button data-tab="homepage-media">Homepage Media</button><button data-tab="chocolate-video">Chocolate Video</button></nav>
+
+<section id="tab-candles"><div class="grid"><div class="card"><div class="eyebrow">Product type · Candle</div><h2 id="candleFormTitle">Add candle</h2><form id="candleForm"><input type="hidden" id="candleId"><div class="field"><label>Name</label><input id="candleName" required></div><div class="field"><label>Fragrance / Scent</label><input id="candleFragrance" placeholder="e.g. Sandalwood"></div><div class="field"><label>Description</label><textarea id="candleDescription"></textarea></div><div class="field"><label>Price (₹)</label><input id="candlePrice" type="number" min="0" step="1" required><div class="row-meta">Authoritative store price used by secure checkout.</div></div><div class="field"><label>Product image</label><input id="candleImageFile" type="file" accept="image/*"><img id="candlePreview" class="preview hidden" alt="Candle preview"><input id="candleImage" type="hidden"></div><div class="field"><label>Secure payment</label><div class="row-meta" style="padding:12px;border:1px solid var(--line);background:var(--cream);line-height:1.7">Secure checkout creates the Razorpay payment flow from the live product price.</div></div><div class="field"><label>Stock</label><select id="candleStock"><option value="true">In stock</option><option value="false">Out of stock</option></select></div><div class="actions"><button class="btn" type="submit">Save candle</button><button class="btn secondary" type="button" id="clearCandle">Clear</button></div><div id="candleMessage" class="message"></div></form></div><div class="card"><div class="toolbar"><div><div class="eyebrow">Only candle products</div><h2>Candles</h2></div><button class="btn secondary" id="refreshCandles">Refresh</button></div><div id="candleList" class="list"></div></div></div></section>
+<section id="tab-chocolates" class="hidden"><div class="grid"><div class="card"><div class="eyebrow">Product type · Chocolate</div><h2 id="chocolateFormTitle">Add chocolate</h2><form id="chocolateForm"><input type="hidden" id="chocolateId"><div class="field"><label>Name</label><input id="chocolateName" required placeholder="e.g. Premium Almond Chocolate"></div><div class="field"><label>Description</label><textarea id="chocolateDescription" placeholder="Describe the chocolate, ingredients or finish"></textarea></div><div class="field"><label>Price (₹)</label><input id="chocolatePrice" type="number" min="0" step="1" required><div class="row-meta">Authoritative store price used by secure checkout.</div></div><div class="field"><label>Product image</label><input id="chocolateImageFile" type="file" accept="image/*"><img id="chocolatePreview" class="preview hidden" alt="Chocolate preview"><input id="chocolateImage" type="hidden"></div><div class="field"><label>Secure payment</label><div class="row-meta" style="padding:12px;border:1px solid var(--line);background:var(--cream);line-height:1.7">Secure checkout creates the Razorpay payment flow from the live product price.</div></div><div class="field"><label>Stock</label><select id="chocolateStock"><option value="true">In stock</option><option value="false">Out of stock</option></select></div><div class="actions"><button class="btn" type="submit">Save chocolate</button><button class="btn secondary" type="button" id="clearChocolate">Clear</button></div><div id="chocolateMessage" class="message"></div></form></div><div class="card"><div class="toolbar"><div><div class="eyebrow">Only chocolate products</div><h2>Chocolates</h2></div><button class="btn secondary" id="refreshChocolates">Refresh</button></div><div id="chocolateList" class="list"></div></div></div></section>
+<section id="tab-orders" class="hidden"><div class="card">
+<div class="toolbar"><h2>Orders</h2><button class="btn secondary" id="refreshOrders">Refresh</button></div>
+<div class="note">Payment status is verified by the Razorpay webhook. Order status controls fulfilment. Customer location is shown only when the customer chose <strong>Use Live Location</strong>.</div>
+<div class="order-tools">
+<input id="orderSearch" type="search" placeholder="Search order ID, customer, phone or email">
+<select id="orderFilter">
+<option value="all">All orders</option>
+<option value="paid">Paid</option>
+<option value="pending">Pending payment</option>
+<option value="processing">Processing</option>
+<option value="shipped">Shipped</option>
+<option value="delivered">Delivered</option>
+<option value="cancelled">Cancelled</option>
+</select>
+<button class="btn secondary" id="clearOrderFilter" type="button">Clear filter</button>
+</div>
+<div id="orderList" class="list" style="margin-top:16px"></div>
+</div></section>
+<section id="tab-feedback" class="hidden"><div class="card"><div class="toolbar"><h2>Customer feedback</h2><button class="btn secondary" id="refreshFeedback">Refresh</button></div><div id="feedbackList" class="list"></div></div></section>
+<section id="tab-promotions" class="hidden"><div class="grid"><div class="card"><h2 id="promoFormTitle">Add promotion</h2><form id="promoForm"><input type="hidden" id="promoId"><div class="field"><label>Code</label><input id="promoCode" required placeholder="WELCOME10"></div><div class="field"><label>Label</label><input id="promoLabel" required placeholder="10% welcome discount"></div><div class="field"><label>Type</label><select id="promoType"><option value="percent">Percentage discount</option><option value="fixed">Fixed discount (₹)</option><option value="shipping">Free shipping</option></select></div><div class="field"><label>Value</label><input id="promoValue" type="number" min="0" step="1" value="10"></div><div class="field"><label>Status</label><select id="promoActive"><option value="true">Active</option><option value="false">Inactive</option></select></div><div class="actions"><button class="btn" type="submit">Save promotion</button><button class="btn secondary" type="button" id="clearPromotion">Clear</button></div><div id="promoMessage" class="message"></div></form></div><div class="card"><div class="toolbar"><h2>Promotions</h2><button class="btn secondary" id="refreshPromotions">Refresh</button></div><div id="promotionList" class="list"></div></div></div></section>
+
+<section id="tab-homepage-media" class="hidden">
+  <div class="grid">
+    <div class="card">
+      <h2>Homepage video</h2>
+      <p class="note">This controls the opening video on the left side of the homepage. Upload an MP4 file or paste a direct public MP4 link.</p>
+
+      <form id="homepageMediaForm">
+        <div class="field">
+          <label>Media type</label>
+          <select id="mediaType">
+            <option value="video">Video (MP4)</option>
+            <option value="image">Image (JPEG / PNG / WebP)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Upload file</label>
+          <input id="mediaFile" type="file" accept="video/mp4,image/jpeg,image/png,image/webp">
+          <div id="mediaFileNote" class="row-meta">MP4 video recommended for the AVNAUR opening.</div>
+        </div>
+
+        <div class="field" id="videoUrlField">
+          <label>Video upload link</label>
+          <input id="mediaUrl" type="url" placeholder="https://.../avnaur-video.mp4">
+          <div class="row-meta">Paste a direct public MP4 video link, or use the file upload above.</div>
+        </div>
+
+        <div id="mediaPreviewBox" class="field">
+          <label>Preview</label>
+          <video id="mediaVideoPreview" class="preview hidden" controls muted playsinline></video>
+          <img id="mediaImagePreview" class="preview hidden" alt="Homepage media preview">
+        </div>
+
+        <div class="field">
+          <label>Status</label>
+          <select id="mediaActive">
+            <option value="true">Use this on homepage</option>
+            <option value="false">Save but don't display</option>
+          </select>
+        </div>
+
+        <div class="actions">
+          <button class="btn" type="submit">Upload & save</button>
+          <button class="btn secondary" type="button" id="clearHomepageMedia">Clear</button>
+        </div>
+        <div id="homepageMediaMessage" class="message"></div>
+      </form>
+    </div>
+
+    <div class="card">
+      <div class="toolbar">
+        <h2>Current homepage media</h2>
+        <button class="btn secondary" id="refreshHomepageMedia">Refresh</button>
+      </div>
+      <div id="homepageMediaList" class="list"></div>
+    </div>
+  </div>
+</section>
+<section id="tab-chocolate-video" class="hidden">
+  <div class="grid">
+    <div class="card">
+      <div class="eyebrow">Chocolate section media</div>
+      <h2>Chocolate video</h2>
+      <p class="note">This video controls the chocolate video area on the lower part of the homepage. It is separate from the opening homepage video.</p>
+
+      <form id="chocolateVideoForm">
+        <div class="field">
+          <label>Upload MP4 video</label>
+          <input id="chocolateVideoFile" type="file" accept="video/mp4">
+          <div class="row-meta">Upload the video that should appear in the chocolate section.</div>
+        </div>
+
+        <div class="field">
+          <label>Video upload link</label>
+          <input id="chocolateVideoUrl" type="url" placeholder="https://.../chocolate-video.mp4">
+          <div class="row-meta">Paste a direct public MP4 link instead of uploading a file.</div>
+        </div>
+
+        <div class="field">
+          <label>Preview</label>
+          <video id="chocolateVideoPreview" class="preview hidden" controls muted playsinline></video>
+        </div>
+
+        <div class="field">
+          <label>Status</label>
+          <select id="chocolateVideoActive">
+            <option value="true">Use this in chocolate section</option>
+            <option value="false">Save but don't display</option>
+          </select>
+        </div>
+
+        <div class="actions">
+          <button class="btn" type="submit">Upload &amp; save</button>
+          <button class="btn secondary" type="button" id="clearChocolateVideo">Clear</button>
+        </div>
+        <div id="chocolateVideoMessage" class="message"></div>
+      </form>
+    </div>
+
+    <div class="card">
+      <div class="toolbar">
+        <h2>Current chocolate video</h2>
+        <button class="btn secondary" id="refreshChocolateVideo">Refresh</button>
+      </div>
+      <div id="chocolateVideoList" class="list"></div>
+    </div>
+  </div>
+</section>
+<section id="tab-settings" class="hidden"><div class="card"><h2>Store settings</h2><form id="settingsForm"><div class="field"><label>WhatsApp link</label><input id="sWhatsapp" type="url" placeholder="https://wa.me/..."></div><div class="field"><label>Instagram link</label><input id="sInstagram" type="url" placeholder="https://www.instagram.com/..."></div><div class="actions"><button class="btn" type="submit">Save settings</button><button class="btn secondary" type="button" id="refreshSettings">Refresh</button></div><div id="settingsMessage" class="message"></div></form></div></section>
+</div>
+<div id="rvWorkspace" class="hidden">
+<div class="rv-heading"><div><div class="rv-eyebrow">RAO VENTURES · GROUP MANAGEMENT</div><h1>Business overview</h1><p>One operating view across brands, partners, inventory and financial commitments.</p></div><span id="roleBadge" class="rv-badge">Checking access</span></div>
+<div id="rvAccessMessage" class="rv-note">Checking Rao Ventures access…</div>
+
+<div class="rv-note"><b>Group workspace</b> · Manage Rao Ventures and its brands from the same Control Room. Existing AVNAUR store operations remain separate below.</div>
+<div class="cards">
+<div class="metric"><span>Partners</span><strong id="mPartners">—</strong></div><div class="metric"><span>Open orders</span><strong id="mOrders">—</strong></div><div class="metric"><span>Pending verification</span><strong id="mVerify">—</strong></div><div class="metric"><span>Open payables</span><strong id="mPayables">—</strong></div>
+</div>
+<div class="layout"><nav class="side" id="side">
+<button class="active" data-view="overview">Executive overview</button><button data-view="partners">Partners</button><button data-view="orders">Orders</button><button data-view="verification">Verification</button><button data-view="stock">Stock transfers</button><button data-view="sales">Sales reports</button><button data-view="accounts">Accounts & payments</button>
+</nav><section class="panel">
+<div id="view-overview" class="view"><div class="toolbar"><h2>Operating priorities</h2><button class="secondary" id="refreshAll">Refresh data</button></div><div id="overviewList" class="notice">Loading operational data…</div><p class="muted">Only the owner can approve verification and payments. The overseer can prepare records and payment batches but cannot approve or execute them.</p></div>
+<div id="view-partners" class="view hidden"><div class="toolbar"><h2>Partner directory</h2></div><form id="partnerForm"><div class="formgrid"><div class="field"><label>Partner code (assigned by you)</label><input id="pCode" placeholder="MFG-0001" required></div><div class="field"><label>Partner type</label><select id="pType"><option value="manufacturer">Manufacturer</option><option value="distributor">Distributor</option><option value="retailer">Retailer</option><option value="merchant">Merchant</option></select></div><div class="field"><label>Business name</label><input id="pName" required></div><div class="field"><label>Contact email</label><input id="pEmail" type="email"></div><div class="field"><label>Phone</label><input id="pPhone"></div><div class="field"><label>Brand</label><input id="pBrand" value="AVNAUR"></div></div><button type="submit">Register partner</button><div id="partnerMsg" class="message"></div></form><hr style="border:0;border-top:1px solid var(--line);margin:22px 0"><div id="partnersTable" class="tablewrap"></div><div class="notice">Partner records are managed here. Access-code login is handled separately through the secure partner-code workflow. You can rename a partner without changing its organisation ID or operational history.</div></div>
+<div id="view-orders" class="view hidden"><div class="toolbar"><h2>Order management</h2></div><form id="orderForm"><div class="formgrid"><div class="field"><label>Order reference</label><input id="oCode" placeholder="RV-AVN-0001" required></div><div class="field"><label>Partner</label><select id="oPartner" required></select></div><div class="field"><label>Product / scope</label><input id="oProduct" required placeholder="Cashew chocolate"></div><div class="field"><label>Quantity</label><input id="oQty" type="number" min="1" required></div><div class="field"><label>Agreed unit rate (₹)</label><input id="oRate" type="number" min="0" step=".01" required></div><div class="field"><label>Required completion date</label><input id="oDue" type="date"></div><div class="field"><label>Order type</label><select id="oType"><option value="manufacturing">Manufacturing</option><option value="supply">Supply</option><option value="replenishment">Retailer replenishment</option></select></div><div class="field"><label>Brand</label><input id="oBrand" value="AVNAUR"></div></div><div class="field"><label>Instructions</label><textarea id="oNotes"></textarea></div><button type="submit">Create order</button><div id="orderMsg" class="message"></div></form><hr style="border:0;border-top:1px solid var(--line);margin:22px 0"><div id="ordersTable" class="tablewrap"></div></div>
+<div id="view-verification" class="view hidden"><h2>Verification centre</h2><div class="notice">Review partner submissions against physical quantities received. Approvals are owner-only; the overseer may prepare and flag discrepancies.</div><div id="verificationTable" class="tablewrap"></div></div>
+<div id="view-stock" class="view hidden"><h2>Manual stock transfers</h2><form id="stockForm"><div class="formgrid"><div class="field"><label>Product / item</label><input id="sProduct" required></div><div class="field"><label>Quantity</label><input id="sQty" type="number" min="1" required></div><div class="field"><label>From partner</label><select id="sFrom"></select></div><div class="field"><label>To partner</label><select id="sTo"></select></div><div class="field"><label>Transfer date</label><input id="sDate" type="date"></div></div><button type="submit">Record stock transfer</button><div id="stockMsg" class="message"></div></form><hr style="border:0;border-top:1px solid var(--line);margin:22px 0"><div id="stockTable" class="tablewrap"></div></div>
+<div id="view-sales" class="view hidden"><h2>Sales reports</h2><div id="salesTable" class="tablewrap"></div></div>
+<div id="view-accounts" class="view hidden"><h2>Accounts & settlements</h2><div class="notice">The overseer may prepare payables and payment batches. Only the owner can approve payments. Payment execution occurs through your bank/payment provider; record the actual transaction reference and upload evidence afterwards.</div><form id="payForm"><div class="formgrid"><div class="field"><label>Partner</label><select id="payPartner"></select></div><div class="field"><label>Amount (₹)</label><input id="payAmount" type="number" min=".01" step=".01" required></div><div class="field"><label>Description</label><input id="payDesc" required placeholder="Manufacturing invoice RV-..."></div><div class="field"><label>Due date</label><input id="payDue" type="date"></div></div><button type="submit">Prepare payable</button><div id="payMsg" class="message"></div></form><hr style="border:0;border-top:1px solid var(--line);margin:22px 0">
+<div class="cards" style="grid-template-columns:repeat(3,minmax(0,1fr));margin:18px 0">
+<div class="metric"><span>Payment pending</span><strong id="mPayPending">0</strong></div>
+<div class="metric"><span>Payment approved</span><strong id="mPayApproved">0</strong></div>
+<div class="metric"><span>Payment completed</span><strong id="mPayCompleted">0</strong></div>
+</div>
+<div class="notice" style="margin-bottom:14px">Payment status guide: <b>Pending</b> = prepared and awaiting approval; <b>Approved</b> = approved for payment; <b>Completed</b> = marked paid after the bank transfer is actually made.</div>
+<div id="paymentsTable" class="tablewrap"></div><hr><h3>Partner payment requests</h3><div id="paymentRequestsTable" class="tablewrap">Load after migration.</div></div>
+</section></div></div>
+</main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
+const SUPABASE_URL='https://ofyejsjxmhdvxdwjflhu.supabase.co';const SUPABASE_KEY='sb_publishable_sI2-_B0LUG9yuysnm-lw5w_7371zv4Z';const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{storageKey:'avnaur-owner-auth',persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});const $=id=>document.getElementById(id);const money=n=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0}).format(Number(n||0));const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));let products=[],orders=[],feedback=[],promotions=[];
+function msg(id,text,ok=false){$(id).textContent=text;$(id).className=ok?'message success':'message';}
+async function init(){
+  const {data:{session},error}=await sb.auth.getSession();
+  if(error){showLogin();msg('loginMessage',error.message);return;}
+  // The partner access-code flow can create anonymous Supabase sessions.
+  // Never treat one of those sessions as an admin login.
+  if(session?.user?.is_anonymous){
+    await sb.auth.signOut();
+    showLogin();
+    return;
+  }
+  if(session){showApp();}else{showLogin();}
+}
+function showLogin(){$('loginView').classList.remove('hidden');$('app').classList.add('hidden')}
+function showHome(){
+  $('welcomeDashboard').classList.remove('hidden');
+  document.querySelector('.group-switcher').classList.add('hidden');
+  $('avnaurWorkspace').classList.add('hidden');
+  $('rvWorkspace').classList.add('hidden');
+  $('workspace-return').classList.add('hidden');
+  $('welcomeDate').textContent=new Intl.DateTimeFormat('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).format(new Date()).toUpperCase();
+}
+function openWorkspace(which){
+  $('welcomeDashboard').classList.add('hidden');
+  document.querySelector('.group-switcher').classList.remove('hidden');
+  $('workspace-return').classList.remove('hidden');
+  if(which==='avnaur'){
+    $('avnaurWorkspace').classList.remove('hidden');$('rvWorkspace').classList.add('hidden');
+    $('switchAvnaur').click();loadAll();
+  }else{
+    $('avnaurWorkspace').classList.add('hidden');$('rvWorkspace').classList.remove('hidden');
+    $('switchRao').click();
+  }
+}
+function showApp(){$('loginView').classList.add('hidden');$('app').classList.remove('hidden');showHome()}
+$('loginForm').onsubmit=async e=>{e.preventDefault();msg('loginMessage','Signing in…',true);const {error}=await sb.auth.signInWithPassword({email:$('loginEmail').value.trim(),password:$('loginPassword').value});if(error){msg('loginMessage',error.message);return}showApp()};$('logoutBtn').onclick=async()=>{await sb.auth.signOut();showLogin()};
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');['candles','chocolates','orders','feedback','promotions','settings','homepage-media','chocolate-video'].forEach(t=>$('tab-'+t).classList.toggle('hidden',t!==b.dataset.tab));});
+async function loadAll(){await Promise.all([loadProducts(),loadOrders(),loadFeedback(),loadPromotions(),loadSettings()])}
+async function loadProducts(){
+  const {data,error}=await sb.from('products').select('*').order('created_at',{ascending:false});
+  if(error){$('candleList').innerHTML='<div class="empty">'+esc(error.message)+'</div>';$('chocolateList').innerHTML='<div class="empty">'+esc(error.message)+'</div>';return}
+  products=data||[];
+  $('statProducts').textContent=products.length;
+  renderProductLists();
+}
+
+function renderProductCard(p,type){
+  const label=type==='chocolate'?'Chocolate':'Candle';
+  return `<div class="row"><div class="row-main"><div><div class="row-title">${esc(p.name||'Unnamed product')}</div><div class="row-meta">${type==='candle'&&p.fragrance_name?esc(p.fragrance_name)+' · ':''}${money(p.price)} · ${p.in_stock===false?'Out of stock':'In stock'}</div></div><span class="status">${p.in_stock===false?'Hidden':'Live'}</span></div><div class="row-meta"><span class="pill">${label}</span> ${esc(p.description||'No description')}</div>${p.image_url?`<img class="preview" src="${esc(p.image_url)}" alt="">`:''}<div class="actions"><button onclick="editProduct(${p.id},'${type}')">Edit</button><button onclick="deleteProduct(${p.id})">Delete</button></div></div>`;
+}
+
+function renderProductLists(){
+  const candles=products.filter(p=>String(p.product_type||'candle').toLowerCase()==='candle');
+  const chocolates=products.filter(p=>String(p.product_type||'candle').toLowerCase()==='chocolate');
+  $('candleList').innerHTML=candles.length?candles.map(p=>renderProductCard(p,'candle')).join(''):'<div class="empty">No candle products yet.</div>';
+  $('chocolateList').innerHTML=chocolates.length?chocolates.map(p=>renderProductCard(p,'chocolate')).join(''):'<div class="empty">No chocolate products yet.</div>';
+}
+
+async function uploadImageIfNeeded(file,currentUrl,messageId,pathFolder){
+  let imageUrl=currentUrl||null;
+  if(file){
+    if(!file.type.startsWith('image/')){msg(messageId,'Please choose an image file.');return null}
+    const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'-');
+    const path=`${pathFolder}/${crypto.randomUUID()}-${safe}`;
+    const {error}=await sb.storage.from('product-image').upload(path,file,{upsert:false,contentType:file.type});
+    if(error){msg(messageId,error.message);return null}
+    imageUrl=sb.storage.from('product-image').getPublicUrl(path).data.publicUrl;
+  }
+  return imageUrl;
+}
+
+async function saveProduct(kind){
+  const isChocolate=kind==='chocolate';
+  const prefix=isChocolate?'chocolate':'candle';
+  const id=$(prefix+'Id').value;
+  const file=$(prefix+'ImageFile').files[0];
+  const imageUrl=await uploadImageIfNeeded(file,$(prefix+'Image').value.trim()||null,prefix+'Message',kind);
+  if(file && !imageUrl)return;
+  const productName=$(prefix+'Name').value.trim();
+  const productPrice=Number($(prefix+'Price').value);
+  if(!productName){msg(prefix+'Message','Product name is required.');return}
+  if(!Number.isFinite(productPrice)||productPrice<0){msg(prefix+'Message','Please enter a valid product price.');return}
+  const payload=isChocolate
+    ? {name:productName,fragrance_name:null,description:$(prefix+'Description').value.trim()||null,price:productPrice,image_url:imageUrl,in_stock:$(prefix+'Stock').value==='true',product_type:'chocolate'}
+    : {name:productName,fragrance_name:$(prefix+'Fragrance').value.trim()||null,description:$(prefix+'Description').value.trim()||null,price:productPrice,image_url:imageUrl,in_stock:$(prefix+'Stock').value==='true',product_type:'candle'};
+  const {error}=id?await sb.from('products').update(payload).eq('id',id):await sb.from('products').insert(payload);
+  if(error){msg(prefix+'Message',error.message);return}
+  msg(prefix+'Message',`${isChocolate?'Chocolate':'Candle'} saved.`,true);
+  if(isChocolate)clearChocolate(); else clearCandle();
+  loadProducts();
+}
+
+$('candleForm').onsubmit=async e=>{e.preventDefault();await saveProduct('candle')};
+$('chocolateForm').onsubmit=async e=>{e.preventDefault();await saveProduct('chocolate')};
+
+window.editProduct=id=>{};
+window.editProduct=(id,type)=>{
+  const p=products.find(x=>String(x.id)===String(id));if(!p)return;
+  const isChocolate=type==='chocolate';
+  const prefix=isChocolate?'chocolate':'candle';
+  const tab=isChocolate?'chocolates':'candles';
+  document.querySelector(`.nav button[data-tab="${tab}"]`).click();
+  $(prefix+'Id').value=p.id;
+  $(prefix+'Name').value=p.name||'';
+  if(!isChocolate)$(prefix+'Fragrance').value=p.fragrance_name||'';
+  $(prefix+'Description').value=p.description||'';
+  $(prefix+'Price').value=p.price??0;
+  $(prefix+'Image').value=p.image_url||'';
+  $(prefix+'ImageFile').value='';
+  $(prefix+'Preview').src=p.image_url||'';
+  $(prefix+'Preview').classList.toggle('hidden',!p.image_url);
+  $(prefix+'Stock').value=String(p.in_stock!==false);
+  $(prefix+'FormTitle').textContent=isChocolate?'Edit chocolate':'Edit candle';
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+window.deleteProduct=async id=>{if(!confirm('Delete this product?'))return;const {error}=await sb.from('products').delete().eq('id',id);if(error)alert(error.message);else loadProducts()};
+
+$('candleImageFile').onchange=()=>{const f=$('candleImageFile').files[0];if(f){$('candlePreview').src=URL.createObjectURL(f);$('candlePreview').classList.remove('hidden')}};
+$('chocolateImageFile').onchange=()=>{const f=$('chocolateImageFile').files[0];if(f){$('chocolatePreview').src=URL.createObjectURL(f);$('chocolatePreview').classList.remove('hidden')}};
+function clearCandle(){$('candleId').value='';$('candleForm').reset();$('candleFragrance').value='';$('candleImage').value='';$('candleImageFile').value='';$('candlePreview').src='';$('candlePreview').classList.add('hidden');$('candleStock').value='true';$('candleFormTitle').textContent='Add candle'}
+function clearChocolate(){$('chocolateId').value='';$('chocolateForm').reset();$('chocolateImage').value='';$('chocolateImageFile').value='';$('chocolatePreview').src='';$('chocolatePreview').classList.add('hidden');$('chocolateStock').value='true';$('chocolateFormTitle').textContent='Add chocolate'}
+$('clearCandle').onclick=clearCandle;
+$('clearChocolate').onclick=clearChocolate;
+$('refreshCandles').onclick=loadProducts;
+$('refreshChocolates').onclick=loadProducts;
+function orderMatchesSearch(o){
+  const q=String($('orderSearch').value||'').trim().toLowerCase();
+  if(!q)return true;
+  return [o.id,o.customer_name,o.phone,o.email,o.razorpay_payment_id,o.razorpay_reference_id,o.razorpay_payment_link_id]
+    .some(v=>String(v??'').toLowerCase().includes(q));
+}
+
+function orderMatchesFilter(o){
+  const filter=$('orderFilter').value;
+  if(filter==='all')return true;
+  const paymentStatus=String(o.payment_status||'').toLowerCase();
+  const orderStatus=String(o.status||'').toLowerCase();
+  if(filter==='paid')return paymentStatus==='paid' || (!paymentStatus && orderStatus==='paid');
+  if(filter==='pending')return paymentStatus==='pending' || (!paymentStatus && orderStatus==='pending');
+  return orderStatus===filter;
+}
+
+function locationMarkup(o){
+  const location=o.customer_location;
+  if(!location)return '';
+  const text=typeof location==='string'?location:(location.address||location.name||location.lat!=null?JSON.stringify(location):String(location));
+  let href='';
+  if(location && typeof location==='object' && location.lat!=null && location.lng!=null){
+    href=`https://www.google.com/maps?q=${encodeURIComponent(location.lat+','+location.lng)}`;
+  }
+  return `<div class="location-box"><strong>Live location:</strong> ${esc(text)}${href?`<br><a class="location-link" href="${esc(href)}" target="_blank" rel="noopener">Open in Google Maps</a>`:''}</div>`;
+}
+
+async function loadOrders(){
+  const {data,error}=await sb.from('orders').select('*').order('created_at',{ascending:false});
+  if(error){
+    $('orderList').innerHTML='<div class="empty">'+esc(error.message)+'</div>';
+    return;
+  }
+
+  orders=data||[];
+
+  const paid=o=>String(o.payment_status||o.status||'').toLowerCase()==='paid';
+  $('statOrders').textContent=orders.length;
+  $('statPaid').textContent=orders.filter(paid).length;
+  $('statRevenue').textContent=money(
+    orders.filter(paid).reduce((s,o)=>s+Number(o.amount||0),0)
+  );
+
+  const visibleOrders=orders.filter(o=>orderMatchesFilter(o)&&orderMatchesSearch(o));
+
+  if(!visibleOrders.length){
+    $('orderList').innerHTML='<div class="empty">No orders match the current filter.</div>';
+    return;
+  }
+
+  $('orderList').innerHTML=visibleOrders.map(o=>{
+    let items=[];
+    try{
+      items=typeof o.items==='string'?JSON.parse(o.items||'[]'):(o.items||[]);
+    }catch(e){}
+
+    const paymentStatus=String(o.payment_status||o.status||'pending').toLowerCase();
+    const orderStatus=String(o.status||'pending').toLowerCase();
+
+    return `<div class="row">
+      <div class="row-main">
+        <div>
+          <div class="row-title">AVNAUR Order #${esc(o.id)}</div>
+          <div class="row-meta">${esc(o.customer_name||'Customer')} · ${esc(o.phone||'')} · ${money(o.amount)}</div>
+        </div>
+        <div style="text-align:right">
+          <span class="status">Payment: ${esc(paymentStatus)}</span><br>
+          <select style="margin-top:7px" onchange="setOrderStatus(${Number(o.id)},this.value)">
+            <option value="pending" ${orderStatus==='pending'?'selected':''}>Order: pending</option>
+            <option value="processing" ${orderStatus==='processing'?'selected':''}>Order: processing</option>
+            <option value="shipped" ${orderStatus==='shipped'?'selected':''}>Order: shipped</option>
+            <option value="delivered" ${orderStatus==='delivered'?'selected':''}>Order: delivered</option>
+            <option value="cancelled" ${orderStatus==='cancelled'?'selected':''}>Order: cancelled</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="row-meta">${esc(o.customer_address||'No address')}</div>
+      ${o.email?`<div class="row-meta">${esc(o.email)}</div>`:''}
+
+      ${locationMarkup(o)}
+
+      ${o.razorpay_payment_id?`<div class="row-meta"><strong>Razorpay Payment ID:</strong> ${esc(o.razorpay_payment_id)}</div>`:''}
+      ${o.razorpay_reference_id?`<div class="row-meta"><strong>Reference ID:</strong> ${esc(o.razorpay_reference_id)}</div>`:''}
+      ${o.razorpay_payment_link_id?`<div class="row-meta"><strong>Payment Link ID:</strong> ${esc(o.razorpay_payment_link_id)}</div>`:''}
+
+      ${o.promo_code?`<div class="row-meta">Promo: <span class="pill">${esc(o.promo_code)}</span> Discount: ${money(o.discount)}</div>`:''}
+
+      ${items.length?`<div class="order-items">${items.map(i=>`<div>${esc(i.name||'Product')} × ${Number(i.qty||1)} — ${money(Number(i.price||0)*Number(i.qty||1))}</div>`).join('')}</div>`:''}
+
+      <div class="row-meta">${o.created_at?new Date(o.created_at).toLocaleString('en-IN'):''}</div>
+
+      <div class="order-actions">
+        <button class="actions button danger-btn" onclick="deleteOrder(${Number(o.id)})">Delete order</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+window.setOrderStatus=async(id,status)=>{
+  const {error}=await sb.from('orders').update({status}).eq('id',id);
+  if(error)alert(error.message);
+  else loadOrders();
+};
+
+window.deleteOrder=async(id)=>{
+  const order=orders.find(o=>String(o.id)===String(id));
+  const label=order?`AVNAUR Order #${order.id} (${order.customer_name||'Customer'})`:`AVNAUR Order #${id}`;
+  if(!confirm(`Delete ${label} permanently?\n\nThis cannot be undone.`))return;
+
+  const {error}=await sb.from('orders').delete().eq('id',id);
+  if(error){
+    alert('Could not delete this order: '+error.message);
+    return;
+  }
+  loadOrders();
+};
+
+$('refreshOrders').onclick=loadOrders;
+$('orderSearch').oninput=loadOrders;
+$('orderFilter').onchange=loadOrders;
+$('clearOrderFilter').onclick=()=>{
+  $('orderSearch').value='';
+  $('orderFilter').value='all';
+  loadOrders();
+};
+
+// Live order updates: refresh the dashboard immediately when Supabase changes an order.
+let ordersRealtimeChannel=null;
+function startOrdersRealtime(){
+  if(ordersRealtimeChannel) sb.removeChannel(ordersRealtimeChannel);
+  ordersRealtimeChannel=sb.channel('avnaur-orders-live')
+    .on('postgres_changes',{event:'*',schema:'public',table:'orders'},()=>{
+      loadOrders();
+    })
+    .subscribe((status)=>{
+      console.log('AVNAUR orders realtime:',status);
+    });
+}
+
+window.addEventListener('beforeunload',()=>{
+  if(ordersRealtimeChannel) sb.removeChannel(ordersRealtimeChannel);
+});
+
+startOrdersRealtime();
+
+async function loadFeedback(){const {data,error}=await sb.from('feedback').select('*').order('created_at',{ascending:false});if(error){$('feedbackList').innerHTML='<div class="empty">'+esc(error.message)+'</div>';return}feedback=data||[];$('statFeedback').textContent=feedback.length;$('feedbackList').innerHTML=feedback.length?feedback.map(f=>`<div class="row"><div class="row-title">${esc(f.name||'Customer')}</div><div class="row-meta" style="font-family:'Playfair Display',serif;font-size:18px;color:var(--ink)">${esc(f.message||'')}</div><div class="row-meta">${f.created_at?new Date(f.created_at).toLocaleString('en-IN'):''}</div></div>`).join(''):'<div class="empty">No feedback yet.</div>'}$('refreshFeedback').onclick=loadFeedback;
+async function loadPromotions(){const {data,error}=await sb.from('promotions').select('*').order('created_at',{ascending:false});if(error){$('promotionList').innerHTML='<div class="empty">'+esc(error.message)+'</div>';return}promotions=data||[];$('promotionList').innerHTML=promotions.length?promotions.map(p=>`<div class="row"><div class="row-main"><div><div class="row-title">${esc(p.code)}</div><div class="row-meta">${esc(p.label||'')} · ${p.type==='percent'?esc(p.value)+'% discount':p.type==='fixed'?money(p.value)+' discount':esc(p.type)}</div></div><span class="status">${p.active?'Active':'Inactive'}</span></div><div class="actions"><button onclick="editPromotion(${p.id})">Edit</button><button onclick="deletePromotion(${p.id})">Delete</button></div></div>`).join(''):'<div class="empty">No promotions yet.</div>'}
+$('promoForm').onsubmit=async e=>{e.preventDefault();const id=$('promoId').value;const payload={code:$('promoCode').value.trim().toUpperCase(),label:$('promoLabel').value.trim(),type:$('promoType').value,value:Number($('promoValue').value||0),active:$('promoActive').value==='true'};const {error}=id?await sb.from('promotions').update(payload).eq('id',id):await sb.from('promotions').insert(payload);if(error){msg('promoMessage',error.message);return}msg('promoMessage','Promotion saved.',true);clearPromotion();loadPromotions()};window.editPromotion=id=>{const p=promotions.find(x=>String(x.id)===String(id));if(!p)return;$('promoId').value=p.id;$('promoCode').value=p.code||'';$('promoLabel').value=p.label||'';$('promoType').value=p.type||'percent';$('promoValue').value=p.value??0;$('promoActive').value=String(p.active!==false);$('promoFormTitle').textContent='Edit promotion'};window.deletePromotion=async id=>{if(!confirm('Delete this promotion?'))return;const {error}=await sb.from('promotions').delete().eq('id',id);if(error)alert(error.message);else loadPromotions()};function clearPromotion(){$('promoId').value='';$('promoForm').reset();$('promoType').value='percent';$('promoValue').value='10';$('promoActive').value='true';$('promoFormTitle').textContent='Add promotion'}$('clearPromotion').onclick=clearPromotion;$('refreshPromotions').onclick=loadPromotions;
+async function loadSettings(){const {data,error}=await sb.from('settings').select('*').order('id',{ascending:true}).limit(1).maybeSingle();if(error){msg('settingsMessage',error.message);return}if(data){$('sWhatsapp').value=data.whatsapp||'';$('sInstagram').value=data.instagram||''}}$('settingsForm').onsubmit=async e=>{e.preventDefault();const payload={whatsapp:$('sWhatsapp').value.trim()||null,instagram:$('sInstagram').value.trim()||null};const {data:existing,error:readError}=await sb.from('settings').select('id').order('id',{ascending:true}).limit(1).maybeSingle();if(readError){msg('settingsMessage',readError.message);return}const result=existing?.id?await sb.from('settings').update(payload).eq('id',existing.id):await sb.from('settings').insert(payload);if(result.error){msg('settingsMessage',result.error.message);return}msg('settingsMessage','Settings saved.',true);loadSettings()};$('refreshSettings').onclick=loadSettings;
+
+let homepageMedia=[];
+
+function mediaAccepts(type,file){
+  if(!file) return false;
+  return type==='video'
+    ? file.type==='video/mp4'
+    : ['image/jpeg','image/png','image/webp'].includes(file.type);
+}
+
+async function loadHomepageMedia(){
+  const {data,error}=await sb.from('settings').select('*').order('id',{ascending:true}).limit(1).maybeSingle();
+  if(error){
+    $('homepageMediaList').innerHTML='<div class="empty">'+esc(error.message)+'</div>';
+    return;
+  }
+
+  const currentUrl=data?.homepage_media_url||null;
+  const currentType=data?.homepage_media_type||null;
+  const active=data?.homepage_media_active!==false;
+
+  if(!currentUrl){
+    $('homepageMediaList').innerHTML='<div class="empty">No homepage media uploaded yet.</div>';
+    return;
+  }
+
+  const mediaHtml=currentType==='video'
+    ? `<video src="${esc(currentUrl)}" controls muted playsinline></video>`
+    : `<img src="${esc(currentUrl)}" alt="Homepage media">`;
+
+  $('homepageMediaList').innerHTML=`
+    <div class="media-current">
+      <span class="status media-badge">${active?'Live on homepage':'Saved but inactive'}</span>
+      <div class="row-meta">Type: ${esc(currentType||'media')}</div>
+      ${mediaHtml}
+      <div class="actions">
+        <button type="button" onclick="disableHomepageMedia()">Disable on homepage</button>
+      </div>
+    </div>`;
+}
+
+$('mediaType').onchange=()=>{
+  const type=$('mediaType').value;
+  $('mediaFile').value='';
+  $('mediaUrl').value='';
+  $('videoUrlField').classList.toggle('hidden',type!=='video');
+  $('mediaVideoPreview').classList.toggle('hidden',type!=='video');
+  $('mediaImagePreview').classList.toggle('hidden',type!=='image');
+  $('mediaFileNote').textContent=type==='video'
+    ? 'MP4 video recommended for the AVNAUR opening.'
+    : 'JPEG, PNG or WebP image.';
+};
+$('videoUrlField').classList.toggle('hidden',$('mediaType').value!=='video');
+
+$('mediaFile').onchange=()=>{
+  const file=$('mediaFile').files[0];
+  const type=$('mediaType').value;
+  if(!file)return;
+  if(!mediaAccepts(type,file)){
+    msg('homepageMediaMessage',type==='video'?'Please choose an MP4 video.':'Please choose a JPEG, PNG or WebP image.');
+    $('mediaFile').value='';
+    return;
+  }
+  if(type==='video') $('mediaUrl').value='';
+  msg('homepageMediaMessage','',true);
+  const url=URL.createObjectURL(file);
+  if(type==='video'){
+    $('mediaVideoPreview').src=url;
+    $('mediaVideoPreview').classList.remove('hidden');
+    $('mediaImagePreview').classList.add('hidden');
+  }else{
+    $('mediaImagePreview').src=url;
+    $('mediaImagePreview').classList.remove('hidden');
+    $('mediaVideoPreview').classList.add('hidden');
+  }
+};
+
+$('mediaUrl').oninput=()=>{
+  if($('mediaUrl').value.trim() && $('mediaType').value==='video'){
+    $('mediaFile').value='';
+    $('mediaVideoPreview').src=$('mediaUrl').value.trim();
+    $('mediaVideoPreview').classList.remove('hidden');
+    $('mediaImagePreview').classList.add('hidden');
+  }
+};
+
+$('homepageMediaForm').onsubmit=async e=>{
+  e.preventDefault();
+  const type=$('mediaType').value;
+  const file=$('mediaFile').files[0];
+  const directUrl=$('mediaUrl').value.trim();
+
+  if(type==='video' && directUrl){
+    try{
+      const parsed=new URL(directUrl);
+      if(!/^https?:$/i.test(parsed.protocol)) throw new Error('invalid protocol');
+    }catch(err){
+      msg('homepageMediaMessage','Please enter a valid public video URL.');
+      return;
+    }
+  } else if(!mediaAccepts(type,file)){
+    msg('homepageMediaMessage',type==='video'?'Choose an MP4 file or paste a direct public video link.':'Please choose a JPEG, PNG or WebP image.');
+    return;
+  }
+
+  msg('homepageMediaMessage',directUrl?'Saving video link…':'Uploading…',true);
+
+  let publicUrl=directUrl;
+  if(!directUrl){
+    const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'-');
+    const path=`homepage/${crypto.randomUUID()}-${safe}`;
+
+    const {error:uploadError}=await sb.storage.from('product-image').upload(path,file,{
+      upsert:false,
+      contentType:file.type
+    });
+
+    if(uploadError){
+      msg('homepageMediaMessage',uploadError.message);
+      return;
+    }
+
+    publicUrl=sb.storage.from('product-image').getPublicUrl(path).data.publicUrl;
+  }
+
+  const {data:existing,error:readError}=await sb.from('settings')
+    .select('id')
+    .order('id',{ascending:true})
+    .limit(1)
+    .maybeSingle();
+
+  if(readError){
+    msg('homepageMediaMessage',readError.message);
+    return;
+  }
+
+  const payload={
+    homepage_media_url:publicUrl,
+    homepage_media_type:type,
+    homepage_media_active:$('mediaActive').value==='true'
+  };
+
+  const result=existing?.id
+    ? await sb.from('settings').update(payload).eq('id',existing.id)
+    : await sb.from('settings').insert(payload);
+
+  if(result.error){
+    msg('homepageMediaMessage',result.error.message);
+    return;
+  }
+
+  msg('homepageMediaMessage','Homepage media saved.',true);
+  $('mediaFile').value='';
+  loadHomepageMedia();
+};
+
+window.disableHomepageMedia=async()=>{
+  const {data:existing,error}=await sb.from('settings')
+    .select('id')
+    .order('id',{ascending:true})
+    .limit(1)
+    .maybeSingle();
+
+  if(error){alert(error.message);return;}
+  if(!existing?.id){return;}
+
+  const {error:updateError}=await sb.from('settings')
+    .update({homepage_media_active:false})
+    .eq('id',existing.id);
+
+  if(updateError) alert(updateError.message);
+  else loadHomepageMedia();
+};
+
+$('clearHomepageMedia').onclick=()=>{
+  $('mediaFile').value='';
+  $('mediaUrl').value='';
+  $('mediaVideoPreview').src='';
+  $('mediaImagePreview').src='';
+  $('mediaVideoPreview').classList.add('hidden');
+  $('mediaImagePreview').classList.add('hidden');
+  $('homepageMediaMessage').textContent='';
+};
+
+$('refreshHomepageMedia').onclick=loadHomepageMedia;
+
+// Separate video control for the chocolate section on the homepage.
+async function loadChocolateVideo(){
+  const {data,error}=await sb.from('settings').select('id,chocolate_video_url,chocolate_video_active').order('id',{ascending:true}).limit(1).maybeSingle();
+  if(error){
+    $('chocolateVideoList').innerHTML='<div class="empty">'+esc(error.message)+'</div>';
+    return;
+  }
+  const url=data?.chocolate_video_url||'';
+  const active=data?.chocolate_video_active===true;
+  if(!url){
+    $('chocolateVideoList').innerHTML='<div class="empty">No chocolate video uploaded yet.</div>';
+    return;
+  }
+  $('chocolateVideoList').innerHTML=`<div class="media-current"><span class="status media-badge">${active?'Live in chocolate section':'Saved but inactive'}</span><video src="${esc(url)}" controls muted playsinline></video><div class="row-meta">${esc(url)}</div><div class="actions"><button type="button" onclick="disableChocolateVideo()">Disable chocolate video</button></div></div>`;
+}
+
+$('chocolateVideoFile').onchange=()=>{
+  const file=$('chocolateVideoFile').files[0];
+  if(!file)return;
+  if(file.type!=='video/mp4'){
+    msg('chocolateVideoMessage','Please choose an MP4 video.');
+    $('chocolateVideoFile').value='';
+    return;
+  }
+  $('chocolateVideoUrl').value='';
+  $('chocolateVideoPreview').src=URL.createObjectURL(file);
+  $('chocolateVideoPreview').classList.remove('hidden');
+  msg('chocolateVideoMessage','',true);
+};
+
+$('chocolateVideoUrl').oninput=()=>{
+  const url=$('chocolateVideoUrl').value.trim();
+  if(!url)return;
+  $('chocolateVideoFile').value='';
+  $('chocolateVideoPreview').src=url;
+  $('chocolateVideoPreview').classList.remove('hidden');
+};
+
+$('chocolateVideoForm').onsubmit=async e=>{
+  e.preventDefault();
+  const file=$('chocolateVideoFile').files[0];
+  const directUrl=$('chocolateVideoUrl').value.trim();
+  if(file && file.type!=='video/mp4'){
+    msg('chocolateVideoMessage','Please choose an MP4 video.');
+    return;
+  }
+  if(!file && !directUrl){
+    msg('chocolateVideoMessage','Choose an MP4 file or paste a direct public MP4 link.');
+    return;
+  }
+  if(directUrl){
+    try{
+      const parsed=new URL(directUrl);
+      if(!/^https?:$/i.test(parsed.protocol)) throw new Error('invalid');
+    }catch(err){
+      msg('chocolateVideoMessage','Please enter a valid public video URL.');
+      return;
+    }
+  }
+  msg('chocolateVideoMessage',directUrl?'Saving video link…':'Uploading…',true);
+  let publicUrl=directUrl;
+  if(!directUrl){
+    const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'-');
+    const path=`chocolate-video/${crypto.randomUUID()}-${safe}`;
+    const {error:uploadError}=await sb.storage.from('product-image').upload(path,file,{upsert:false,contentType:'video/mp4'});
+    if(uploadError){
+      msg('chocolateVideoMessage',uploadError.message);
+      return;
+    }
+    publicUrl=sb.storage.from('product-image').getPublicUrl(path).data.publicUrl;
+  }
+  const {data:existing,error:readError}=await sb.from('settings').select('id').order('id',{ascending:true}).limit(1).maybeSingle();
+  if(readError){
+    msg('chocolateVideoMessage',readError.message);
+    return;
+  }
+  const payload={chocolate_video_url:publicUrl,chocolate_video_active:$('chocolateVideoActive').value==='true'};
+  const result=existing?.id
+    ? await sb.from('settings').update(payload).eq('id',existing.id)
+    : await sb.from('settings').insert(payload);
+  if(result.error){
+    msg('chocolateVideoMessage',result.error.message);
+    return;
+  }
+  msg('chocolateVideoMessage','Chocolate video saved.',true);
+  $('chocolateVideoFile').value='';
+  $('chocolateVideoUrl').value='';
+  $('chocolateVideoPreview').src='';
+  $('chocolateVideoPreview').classList.add('hidden');
+  loadChocolateVideo();
+};
+
+window.disableChocolateVideo=async()=>{
+  const {data:existing,error}=await sb.from('settings').select('id').order('id',{ascending:true}).limit(1).maybeSingle();
+  if(error){alert(error.message);return;}
+  if(!existing?.id)return;
+  const {error:updateError}=await sb.from('settings').update({chocolate_video_active:false}).eq('id',existing.id);
+  if(updateError) alert(updateError.message);
+  else loadChocolateVideo();
+};
+
+$('clearChocolateVideo').onclick=()=>{
+  $('chocolateVideoFile').value='';
+  $('chocolateVideoUrl').value='';
+  $('chocolateVideoPreview').src='';
+  $('chocolateVideoPreview').classList.add('hidden');
+  $('chocolateVideoMessage').textContent='';
+};
+$('refreshChocolateVideo').onclick=loadChocolateVideo;
+
+
+// Rao Ventures workspace: shares the already-authenticated AVNAUR Supabase client.
+let currentUser=null,currentRole=null,partners=[];
+function rvMessage(id,s){const el=$(id);if(el)el.textContent=s}
+async function initRaoWorkspace(){
+  const {data:{session}}=await sb.auth.getSession();
+  if(!session){$('rvAccessMessage').textContent='Sign in to the Control Room first.';return}
+  currentUser=session.user;
+  const {data,error}=await sb.from('rv_memberships').select('role,company_id,organization_id').eq('user_id',currentUser.id).eq('active',true).maybeSingle();
+  if(error||!data){$('roleBadge').textContent='ACCESS NOT ASSIGNED';$('rvAccessMessage').textContent=error?.message||'Your signed-in account does not yet have a Rao Ventures role. The AVNAUR Control Room remains available. Assign an owner membership after the Rao Ventures database setup has been reviewed and applied.';return}
+  currentRole=data.role;$('roleBadge').textContent=data.role.toUpperCase();$('rvAccessMessage').textContent='Signed in · Rao Ventures access verified.';
+  document.querySelectorAll('#rvWorkspace #side button').forEach(b=>{if(data.role!=='owner'&&['partners','orders','accounts'].includes(b.dataset.view))b.disabled=true});
+  await refreshAll();
+}
+function rvShowView(view){document.querySelectorAll('#rvWorkspace #side button').forEach(x=>x.classList.toggle('active',x.dataset.view===view));document.querySelectorAll('#rvWorkspace .view').forEach(v=>v.classList.toggle('hidden',v.id!=='view-'+view))}
+document.querySelectorAll('#rvWorkspace #side button').forEach(b=>b.onclick=()=>rvShowView(b.dataset.view));
+async function refreshAll(){await Promise.all([loadPartners(),loadRaoOrders(),loadSubmissions(),loadStock(),loadSales(),loadPayments(),loadPaymentRequests()]);}
+$('refreshAll').onclick=refreshAll;
+async function loadPartners(){const {data,error}=await sb.from('rv_organizations').select('*').order('created_at',{ascending:false});if(error){$('partnersTable').textContent=error.message;return}partners=data||[];$('mPartners').textContent=partners.length;const opts='<option value="">Select partner</option>'+partners.filter(p=>p.status==='active').map(p=>`<option value="${p.id}">${esc(p.partner_code)} · ${esc(p.name)}</option>`).join('');['oPartner','sFrom','sTo','payPartner'].forEach(id=>$(id).innerHTML=opts);$('partnersTable').innerHTML=partners.length?`<table><thead><tr><th>Code</th><th>Partner</th><th>Type</th><th>Email</th><th>Status</th><th>Action</th></tr></thead><tbody>${partners.map(p=>`<tr><td>${esc(p.partner_code)}</td><td>${esc(p.name)}</td><td>${esc(p.partner_type)}</td><td>${esc(p.email||'—')}</td><td>${esc(p.status)}</td><td><div class="actions"><button class="secondary" onclick="editPartner('${p.id}')">Edit</button>${p.status==='active'?`<button class="secondary" onclick="archivePartner('${p.id}')">Deactivate</button>`:`<button class="secondary" onclick="reactivatePartner('${p.id}')">Reactivate</button>`}</div></td></tr>`).join('')}</tbody></table>`:'<div class="empty">No partners registered.</div>'}
+$('partnerForm').onsubmit=async e=>{e.preventDefault();const payload={partner_code:$('pCode').value.trim().toUpperCase(),partner_type:$('pType').value,name:$('pName').value.trim(),email:$('pEmail').value.trim()||null,phone:$('pPhone').value.trim()||null,brand_name:$('pBrand').value.trim()||'AVNAUR'};const {error}=await sb.from('rv_organizations').insert(payload);rvMessage('partnerMsg',error?error.message:'Partner registered. Issue their access code from the secure owner code-management workflow.');if(!error){e.target.reset();$('pBrand').value='AVNAUR';loadPartners()}};
+window.editPartner=async id=>{if(currentRole!=='owner')return alert('Owner access required.');const p=partners.find(x=>x.id===id);if(!p)return;const name=prompt('Partner/business name:',p.name);if(name===null)return;const code=prompt('Partner code:',p.partner_code);if(code===null)return;const email=prompt('Contact email:',p.email||'');if(email===null)return;const phone=prompt('Phone:',p.phone||'');if(phone===null)return;const {error}=await sb.from('rv_organizations').update({name:name.trim(),partner_code:code.trim().toUpperCase(),email:email.trim()||null,phone:phone.trim()||null}).eq('id',id);if(error)alert(error.message);else{rvMessage('partnerMsg','Partner details updated. Existing transactions and access-code association are preserved.');await loadPartners()}};
+window.archivePartner=async id=>{if(currentRole!=='owner')return alert('Owner access required.');const p=partners.find(x=>x.id===id);if(!p||!confirm('Deactivate '+p.name+'? Their history will be retained and their access code disabled.'))return;const {data,error}=await sb.rpc('rv_archive_partner',{p_organization_id:id});if(error)alert(error.message);else{alert('Partner deactivated; historical records retained.');await loadPartners()}};
+window.reactivatePartner=async id=>{if(currentRole!=='owner')return alert('Owner access required.');const {error}=await sb.from('rv_organizations').update({status:'active'}).eq('id',id);if(error)alert(error.message);else await loadPartners()};
+async function loadRaoOrders(){const {data,error}=await sb.from('rv_orders').select('*,rv_organizations(name,partner_code)').order('created_at',{ascending:false});if(error){$('ordersTable').textContent=error.message;return}const rows=data||[];$('mOrders').textContent=rows.filter(x=>!['completed','cancelled'].includes(x.status)).length;$('ordersTable').innerHTML=rows.length?`<table><thead><tr><th>Reference</th><th>Partner</th><th>Product</th><th>Qty</th><th>Value</th><th>Status</th><th>Response</th></tr></thead><tbody>${rows.map(o=>`<tr><td>${esc(o.order_code)}</td><td>${esc(o.rv_organizations?.partner_code||'')}<br>${esc(o.rv_organizations?.name||'')}</td><td>${esc(o.product_name)}</td><td>${o.quantity}</td><td>${money(o.quantity*o.unit_rate)}</td><td>${esc(o.status)}</td><td>${esc(o.partner_response||'Awaiting')}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">No orders yet.</div>'}
+$('orderForm').onsubmit=async e=>{e.preventDefault();const payload={order_code:$('oCode').value.trim().toUpperCase(),organization_id:$('oPartner').value,product_name:$('oProduct').value.trim(),quantity:Number($('oQty').value),unit_rate:Number($('oRate').value),required_date:$('oDue').value||null,order_type:$('oType').value,brand_name:$('oBrand').value.trim()||'AVNAUR',notes:$('oNotes').value.trim()||null,status:'sent'};const {error}=await sb.from('rv_orders').insert(payload);rvMessage('orderMsg',error?error.message:'Order created and assigned.');if(!error){e.target.reset();$('oBrand').value='AVNAUR';loadRaoOrders()}};
+async function loadSubmissions(){const {data,error}=await sb.from('rv_production_submissions').select('*,rv_orders(order_code,product_name),rv_organizations(name,partner_code)').order('created_at',{ascending:false});if(error){$('verificationTable').textContent=error.message;return}const rows=data||[];$('mVerify').textContent=rows.filter(x=>x.verification_status==='pending').length;$('verificationTable').innerHTML=rows.length?`<table><thead><tr><th>Order</th><th>Partner</th><th>Produced</th><th>Dispatched</th><th>Received</th><th>Status</th><th>Action</th></tr></thead><tbody>${rows.map(s=>`<tr><td>${esc(s.rv_orders?.order_code||'')}</td><td>${esc(s.rv_organizations?.partner_code||'')}</td><td>${s.produced_qty}</td><td>${s.dispatched_qty}</td><td>${s.received_qty??'—'}</td><td>${esc(s.verification_status)}</td><td>${currentRole==='owner'&&s.verification_status==='pending'?`<div class="actions"><button onclick="verifySubmission('${s.id}',true)">Verify</button><button class="secondary" onclick="verifySubmission('${s.id}',false)">Reject</button></div>`:'—'}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">No production submissions.</div>'}
+window.verifySubmission=async(id,approve)=>{
+  if(currentRole!=='owner')return alert('Owner approval required.');
+  const received=prompt('Enter physically received and accepted quantity:');
+  if(received===null)return;
+  if(received.trim()==='')return alert('Enter a received quantity.');
+  const qty=Number(received);
+  if(!Number.isInteger(qty)||qty<0)return alert('Enter a valid whole quantity.');
+  const note=prompt('Verification note (required for rejection; optional otherwise):')||'';
+  if(!approve&&!note.trim())return alert('Please enter a reason for rejection.');
+  const {data,error}=await sb.rpc('rv_verify_production_submission',{
+    p_submission_id:id,
+    p_received_qty:approve?qty:0,
+    p_decision:approve?'approved':'rejected',
+    p_notes:note
+  });
+  if(error){alert('Verification failed: '+error.message);return;}
+  alert('Verification saved. Status: '+data.status+'; accepted quantity: '+data.received_qty+'.');
+  await refreshAll();
+};
+async function loadStock(){const {data,error}=await sb.from('rv_stock_transfers').select('*,from_org:rv_organizations!rv_stock_transfers_from_organization_id_fkey(name,partner_code),to_org:rv_organizations!rv_stock_transfers_to_organization_id_fkey(name,partner_code)').order('created_at',{ascending:false});if(error){$('stockTable').textContent=error.message;return}const rows=data||[];$('stockTable').innerHTML=rows.length?`<table><thead><tr><th>Product</th><th>Qty</th><th>From</th><th>To</th><th>Status</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${esc(x.product_name)}</td><td>${x.quantity}</td><td>${esc(x.from_org?.partner_code||'—')}</td><td>${esc(x.to_org?.partner_code||'—')}</td><td>${esc(x.status)}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">No transfers.</div>'}
+$('stockForm').onsubmit=async e=>{e.preventDefault();const {error}=await sb.from('rv_stock_transfers').insert({product_name:$('sProduct').value.trim(),quantity:Number($('sQty').value),from_organization_id:$('sFrom').value||null,to_organization_id:$('sTo').value||null,transfer_date:$('sDate').value||null,status:'assigned'});rvMessage('stockMsg',error?error.message:'Stock transfer recorded.');if(!error){e.target.reset();loadStock()}};
+async function loadSales(){const {data,error}=await sb.from('rv_sales_reports').select('*,rv_organizations(name,partner_code)').order('report_date',{ascending:false});if(error){$('salesTable').textContent=error.message;return}const rows=data||[];$('salesTable').innerHTML=rows.length?`<table><thead><tr><th>Partner</th><th>Report date</th><th>Sold</th><th>Returns</th><th>Closing stock</th><th>Notes</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${esc(x.rv_organizations?.partner_code||'')}</td><td>${esc(x.report_date)}</td><td>${x.quantity_sold}</td><td>${x.quantity_returned}</td><td>${x.closing_stock??'—'}</td><td>${esc(x.notes||'—')}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">No sales reports.</div>'}
+async function loadPayments(){
+ const {data,error}=await sb.from('rv_payables').select('*,rv_organizations(name,partner_code)').order('created_at',{ascending:false});
+ if(error){$('paymentsTable').textContent=error.message;return}
+ const rows=data||[];
+ const pending=rows.filter(x=>['prepared','initiated','partially_paid'].includes(String(x.status||'').toLowerCase()));
+ const approved=rows.filter(x=>String(x.status||'').toLowerCase()==='approved');
+ const completed=rows.filter(x=>String(x.status||'').toLowerCase()==='paid');
+ $('mPayPending').textContent=pending.length;
+ $('mPayApproved').textContent=approved.length;
+ $('mPayCompleted').textContent=completed.length;
+ $('mPayables').textContent=money(rows.filter(x=>!['paid','cancelled'].includes(String(x.status||'').toLowerCase())).reduce((a,x)=>a+Number(x.amount),0));
+ const label=s=>({prepared:'Pending',initiated:'Pending',partially_paid:'Pending · Part-paid',approved:'Approved',paid:'Completed',disputed:'Disputed',cancelled:'Cancelled'}[String(s||'').toLowerCase()]||String(s||'Unknown'));
+ const badge=s=>`<span class="status">${esc(label(s))}</span>`;
+ $('paymentsTable').innerHTML=rows.length?`<table><thead><tr><th>Partner</th><th>Description</th><th>Amount</th><th>Due</th><th>Status</th><th>Action</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${esc(x.rv_organizations?.partner_code||'')}</td><td>${esc(x.description)}</td><td>${money(x.amount)}</td><td>${esc(x.due_date||'—')}</td><td>${badge(x.status)}</td><td>${currentRole==='owner'?`<div class="actions">${x.status==='prepared'?`<button onclick="approvePayable('${x.id}')">Approve</button>`:''}<button class="secondary" onclick="editPayable('${x.id}')">Edit</button>${!['paid'].includes(x.status)?`<button class="secondary" onclick="deletePayable('${x.id}')">Delete</button>`:`<button class="secondary" onclick="voidPaidPayable('${x.id}')">Void / reverse</button>`}</div>`:'—'}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">No payables.</div>';
+}
+async function loadPaymentRequests(){const box=$('paymentRequestsTable');if(!box)return;const {data,error}=await sb.from('rv_payment_requests').select('*,rv_organizations(name,partner_code)').order('created_at',{ascending:false});if(error){box.textContent=error.message;return}const rows=data||[];box.innerHTML=rows.length?`<table><thead><tr><th>Partner</th><th>Amount</th><th>Reason</th><th>Bank details</th><th>Status</th><th>Action</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.rv_organizations?.name||r.rv_organizations?.partner_code||'')}</td><td>${money(r.requested_amount)}</td><td>${esc(r.request_reason)}</td><td>${esc(r.bank_account_name||'')}<br>${esc(r.bank_account_number||'')}<br>${esc(r.bank_ifsc||'')}</td><td>${esc(r.status)}</td><td>${currentRole==='owner'&&r.status==='pending'?`<button onclick="reviewPaymentRequest('${r.id}','approved')">Approve</button><button class="secondary" onclick="reviewPaymentRequest('${r.id}','rejected')">Reject</button>`:'—'}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">No partner payment requests.</div>'}
+window.reviewPaymentRequest=async(id,status)=>{if(currentRole!=='owner')return alert('Owner approval required.');const notes=prompt('Review note (optional):')||'';const {error}=await sb.from('rv_payment_requests').update({status,reviewed_by:currentUser.id,reviewed_at:new Date().toISOString(),notes}).eq('id',id);if(error)alert(error.message);else await loadPaymentRequests()};
+$('payForm').onsubmit=async e=>{e.preventDefault();const {error}=await sb.from('rv_payables').insert({organization_id:$('payPartner').value,amount:Number($('payAmount').value),description:$('payDesc').value.trim(),due_date:$('payDue').value||null,status:'prepared'});rvMessage('payMsg',error?error.message:'Payable prepared and awaiting owner approval.');if(!error){e.target.reset();loadPayments()}};
+window.approvePayable=async id=>{if(currentRole!=='owner')return alert('Owner approval required.');if(!confirm('Approve this payable for payment?'))return;const {error}=await sb.from('rv_payables').update({status:'approved',approved_at:new Date().toISOString()}).eq('id',id);if(error)alert(error.message);else loadPayments()};
+window.editPayable=async id=>{if(currentRole!=='owner')return alert('Owner access required.');const {data,error}=await sb.from('rv_payables').select('*').eq('id',id).single();if(error)return alert(error.message);const description=prompt('Description:',data.description);if(description===null)return;const amount=prompt('Amount:',String(data.amount));if(amount===null)return;const due=prompt('Due date (YYYY-MM-DD; blank for none):',data.due_date||'');if(due===null)return;const n=Number(amount);if(!Number.isFinite(n)||n<=0)return alert('Enter a valid positive amount.');const {error:e}=await sb.from('rv_payables').update({description:description.trim(),amount:n,due_date:due.trim()||null}).eq('id',id);if(e)alert(e.message);else await loadPayments()};
+window.deletePayable=async id=>{if(currentRole!=='owner')return alert('Owner access required.');if(!confirm('Permanently delete this unpaid/test payable? This cannot be undone.'))return;const {error}=await sb.from('rv_payables').delete().eq('id',id);if(error)alert(error.message);else await loadPayments()};
+window.voidPaidPayable=async id=>{if(currentRole!=='owner')return alert('Owner access required.');const reason=prompt('Reason for void/reversal (keeps audit trail):');if(reason===null||!reason.trim())return alert('A reason is required.');const {error}=await sb.from('rv_payables').update({status:'disputed',description:'VOID/REVERSED — '+reason.trim()}).eq('id',id);if(error)alert(error.message);else await loadPayments()};
+$('switchAvnaur').onclick=()=>{ $('avnaurWorkspace').classList.remove('hidden');$('rvWorkspace').classList.add('hidden');$('switchAvnaur').classList.add('active');$('switchRao').classList.remove('active');$('switchAvnaur').setAttribute('aria-selected','true');$('switchRao').setAttribute('aria-selected','false')};
+$('switchRao').onclick=()=>{ $('avnaurWorkspace').classList.add('hidden');$('rvWorkspace').classList.remove('hidden');$('switchRao').classList.add('active');$('switchAvnaur').classList.remove('active');$('switchRao').setAttribute('aria-selected','true');$('switchAvnaur').setAttribute('aria-selected','false');if(!$('rvWorkspace').dataset.checked){$('rvWorkspace').dataset.checked='1';initRaoWorkspace()}};
+
+$('enterAvnaur').onclick=()=>openWorkspace('avnaur');
+$('enterRao').onclick=()=>openWorkspace('rao');
+$('returnHome').onclick=showHome;
+
+init();
+</script></body></html>
